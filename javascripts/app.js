@@ -86,6 +86,16 @@ $(document).ready(function() {
     Model.prototype.find = function(param) {
         Store.find(this.constructor, param);
     };
+    Model.prototype.findByIds = function(id) {
+		return Store.find(this.constructor, function(item, index, val) {
+			return $.inArray(item.id, id);
+		});
+	};
+    Model.prototype.findById = function(id) {
+		return Store.find(this.constructor, function(item, index, val) {
+			return item.id == id;
+		})[0];
+	};
 
     var Store = {
 		object: [],
@@ -129,24 +139,62 @@ $(document).ready(function() {
 			}
 			return JSON.stringify(obj);
 		}
-	}
+	};
 
 	/****************
 	*	Models
 	****************/
-    function Flow() {
-        this.__meta = [
-        	"id",
-            "label",
-            "company",
-            "process",
-            "owner",
-            "startDate",
-            "endDate"
-        ]
-    };
-    Flow.prototype = new Model;
-    Flow.prototype.constructor = "Flow";
+	// --- Flow
+	function Flow() {
+	    this.__meta = [
+	    	"id",
+	        "label",
+	        "company",
+	        "process",
+	        "owner",
+	        "startDate",
+	        "endDate",
+	        "steps"
+	    ]
+
+	    // Process getter/setter
+	    this.__defineGetter__("process", function() {
+	    	return new Process().findById(this._processId);
+	    });
+	    this.__defineSetter__("process", function(processId) {
+	    	this._processId = processId;
+	    });
+
+	    // Company getter/setter
+	    this.__defineGetter__("company", function() {
+	    	return new Company().findById(this._companyId);
+	    });
+	    this.__defineSetter__("company", function(companyId) {
+	    	this._companyId = companyId;
+	    });
+
+	    // Owner getter/setter
+	    this.__defineGetter__("owner", function() {
+	    	return new User().findById(this._ownerId);
+	    });
+	    this.__defineSetter__("owner", function(ownerId) {
+	    	this._ownerId = ownerId;
+	    });
+
+	    // Company getter/setter
+	    this.__defineGetter__("steps", function() {
+	    	var steps = new Step().findByIds(this._stepsId);
+	    	_.each(steps, function(step, index) {
+	    		step.flow = this;
+	    	});
+	    	return steps
+	    });
+	    this.__defineSetter__("steps", function(stepsId) {
+	    	this._stepsId = stepsId;
+	    });
+	};
+	Flow.prototype = new Model;
+	Flow.prototype.constructor = "Flow";
 
 	Flow.prototype.save = function() {
 		Console.log("Saving Flow and launching event");
@@ -158,11 +206,72 @@ $(document).ready(function() {
 			return item.name == name;
 		})[0];
 	};
-	Flow.prototype.findById = function(id) {
-		return Store.find(this.constructor, function(item, index, val) {
-			return item.id == id;
-		})[0];
+	// Flow.prototype.findById = function(id) {
+	// 	return Store.find(this.constructor, function(item, index, val) {
+	// 		return item.id == id;
+	// 	})[0];
+	// };
+
+	// --- Process
+	function Process() {
+		this.__meta = [
+			"id",
+			"name"
+		]
 	};
+	Process.prototype = new Model;
+	Process.prototype.constructor = "Process";
+
+	// --- Company
+	function Company() {
+		this.__meta = [
+			"id",
+			"value",
+			"name",
+			"code"
+		]
+	};
+	Company.prototype = new Model;
+	Company.prototype.constructor = "Company";
+
+	// --- User
+	function User() {
+		this.__meta = [
+			"id",
+			"name",
+			"isAccountActive"
+		]
+	}
+	User.prototype = new Model;
+	User.prototype.constructor = "User";
+
+	// --- Step
+	function Step() {
+		this.__meta = [
+			"id",
+			"label",
+			"details",
+			"validated",
+			"attachments",
+			"manager",
+			"endDate",
+			"tasks",
+			"isEditable",
+			"flow"
+		]
+
+		// manager getter/setter
+		this.__defineGetter__("manager", function() {
+			return new User().findById(this._managerId);
+		});
+		this.__defineSetter__("manager", function(managerId) {
+			this._managerId = managerId;
+		});
+	}
+
+	Step.prototype = new Model;
+	Step.prototype.constructor = "Step";
+
 
 	/****************
 	*	Controllers
@@ -204,23 +313,19 @@ $(document).ready(function() {
 			if (!flows) {
 				var flows = new Flow().findAll();
 			}
-			var html = ["<a href='' class='add-flow'>Add flow</a><ul>"];
-			var flowsLength = flows.length;
-			for (i = 0; i<flowsLength; i++) {
-				var flow = flows[i];
-				html.push("<li>");
-				html.push("<span class='id'><input type='hidden' name='id' value='" + flow.id + "'/>" + flow.label + "</span>");
-				html.push("</li>");
+			if (!flows) {
+				return;
 			}
-			html.push("</ul>");
-			$("#app #flow-list").html(html.join(""));
+			var flows = {"flows" :flows};
+			var html = Mustache.render($("#flow-list-template").html(), flows);
+			$("#app #flow-list").html(html);
 
 			this.bind();
 		},
 		bind: function() {
 			$("#app").on("click.FlowList", "ul li", function(e) {
 				e.preventDefault();
-				var id = $(this).find(".id input").val();
+				var id = $(this).find("input[name='id']").val();
 				FlowController.show(id);
 			});
 
@@ -249,23 +354,15 @@ $(document).ready(function() {
 			if (!flow) {
 				return;
 			}
-			var html = "<form><div class='title'>Flow " + flow.label + " detail <a class='close'>X</a></div><div class='detail'>" + 
-					"<input type='hidden' name='id' value='" + flow.id + "'><br/>" +
-					"<label>Name:</label><input type='text' name='name' value='" + flow.label + "'><br/>" +
-					"<label>Company:</label><input type='text' name='company' value='" + flow.company + "'><br/>" +
-					"<label>Process:</label><input type='text' name='process' value='" + flow.process + "'><br/>" +
-					"<label>Owner:</label><input type='text' name='owner' value='" + flow.owner + "'><br/>" +
-					"<label>startDate:</label><input type='text' name='startDate' value='" + flow.startDate + "'><br/>" +
-					"<label>endDate:</label><input type='text' name='endDate' value='" + flow.endDate + "'><br/>" +
-				"</div><input type='submit' value='Enregistrer'/></form>";
+			var html = Mustache.render($("#flow-detail-template").html(), {"flow": flow, "steps": flow.steps});
 			$("#flow-detail").html(html);
+			Console.log(flow.steps);
 			this.bind();
 		},
 		save: function(event) {
 			event.preventDefault();
-			Console.log("flowDetailView save");
-			Console.log(event);
 			var flow = bindFormToObj($("#app #flow-detail form"));
+			Console.log(flow);
 			FlowController.save(flow, flowDetailView.close);
 		},
 		bind: function() {
@@ -288,28 +385,11 @@ $(document).ready(function() {
 		}
 	}
 
-	// // Sample data
-	// var flows =  [
-	// 	{
-	// 		name: "flow1",
-	// 		company: "company1",
-	// 		process: "process1",
-	// 		owner: "nmedda",
-	// 		startDate: "01/01/2001",
-	// 		endDate: "01/02/2001",
-	// 		id: 1
-	// 	},
-	// 	{
-	// 		name: "flow2",
-	// 		company: "company2",
-	// 		process: "process1",
-	// 		owner: "nmedda",
-	// 		startDate: "01/01/2001",
-	// 		endDate: "01/02/2001",
-	// 		id: 2
-	// 	},
-	// ];
 	Store.load(Flow, flows);
+	Store.load(Process, processes);
+	Store.load(Company, companies);
+	Store.load(User, users);
+	Store.load(Step, steps);
 
 	FlowController.list();
 });

@@ -4,38 +4,72 @@
 		<meta charset=utf-8>
 		<title>My JS App</title>
 	</head>
+	<style>
+		.display-none {
+			display: none;
+		}
+	</style>
 	<body>
 		<div id="app" class="content-wrapper">
 			<div id="flow-list"></div>
 			<div id="flow-detail"></div>
 		</div>
 	</body>
-	<script src="javascripts/json2.js"></script>
-    <script src="javascripts/underscore.js"></script>
-	<script src="javascripts/jquery.js"></script>
-	<script src="data.js"></script>
-	<script src="javascripts/app.js"></script>
+
+	<!-- LIB -->
+	<script src="/javascripts/json2.js"></script>
+	<script src="/javascripts/jquery.js"></script>
+	<script src="/javascripts/mustache.js"></script>
+	<script src="javascripts/underscore.js"></script>
+
+	<!-- DATA -->
+	<script src="/users.js"></script>
+	<script src="/companies.js"></script>
+	<script src="/processes.js"></script>
+	<script src="/tasks.js"></script>
+	<script src="/steps.js"></script>
+	<script src="/data.js"></script>
+
+	<!-- APP -->
+	<script src="/javascripts/app.js"></script>
 </html>
 
-<!--
-<form>
-	<div class='title'>Flow " + flow.name + " detail <a class='close'>X</a></div>
-	<div class='detail'>" + 
-		<input type='hidden' name='id' value='" + flow.id + "'>
-		<br/>
-		<label>Name:</label><input type='text' name='name' value='" + flow.name + "'>
-		<br/>
-		<label>Company:</label><input type='text' name='company' value='" + flow.company + "'>
-		<br/>
-		<label>Process:</label><input type='text' name='process' value='" + flow.process + "'>
-		<br/>
-		<label>Owner:</label><input type='text' name='owner' value='" + flow.owner + "'>
-		<br/>
-		<label>startDate:</label><input type='text' name='startDate' value='" + flow.startDate + "'>
-		<br/>
-		<label>endDate:</label><input type='text' name='endDate' value='" + flow.endDate + "'>
-		<br/>
+<div id="flow-detail-template" class="display-none">
+	<form style="width: 400px; float: left;">
+		<div class='title'>Flow {{flow.label}} detail <a class='close'>X</a></div>
+		<div class='detail'>
+			<input type='hidden' name='id' value='{{flow.id}}'>
+			<br/>
+			<label>Name:</label><input type='text' name='label' value='{{flow.label}}'>
+			<br/>
+			<label>Company:</label><input type='text' name='company' value='{{flow.company.name}}'>
+			<br/>
+			<label>Process:</label><input type='text' name='process' value='{{flow.process.name}}'>
+			<br/>
+			<label>Owner:</label><input type='text' name='owner' value='{{flow.owner.name}}'>
+			<br/>
+			<label>startDate:</label><input type='text' name='startDate' value='{{flow.startDate}}'>
+			<br/>
+			<label>endDate:</label><input type='text' name='endDate' value='{{flow.endDate}}'>
+			<br/>
+		</div>
+		<input type='submit' value='Enregistrer'/>
+	</form>
+
+	<div class="steps" style="width: 400px; float: right;">
+		{{#flow.steps}}
+			<li>{{label}} - {{details}} - {{manager.name}} - {{endDate}} - {{flow.label}}</li>
+		{{/flow.steps}}
 	</div>
-	<input type='submit' value='Enregistrer'/>
-</form>
--->
+
+</div>
+
+<div id="flow-list-template" class="display-none">
+	<a href='' class='add-flow'>Add flow</a><ul>
+	{{#flows}}
+		<li>
+			<input type="hidden" name="id" value="{{id}}" />
+			{{label}}
+		</li>
+	{{/flows}}
+</div>
