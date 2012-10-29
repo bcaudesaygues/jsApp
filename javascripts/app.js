@@ -60,13 +60,13 @@ $(document).ready(function() {
     // Object factory
     var factory = function(modelType, arg) {
         var obj = new modelType;
-        $.each(obj.__meta, function(index, propName) {
-            if (arg[propName]) {
-                obj[propName] = arg[propName];
+        _.each(obj.__meta, function(propName, index) {
+            if (this[propName]) {
+                obj[propName] = this[propName];
             } else {
                 obj[propName] = "";
             }
-        });
+        }, arg);
 
         obj.prototype = new modelType;
         return obj;
