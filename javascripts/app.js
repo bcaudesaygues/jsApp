@@ -6,6 +6,39 @@ $(document).ready(function() {
 	}
 
 	/*******************************
+	* Old browser
+	*******************************/
+	if (!Array.prototype.filter)
+	{
+	  Array.prototype.filter = function(fun /*, thisp */)
+	  {
+	    "use strict";
+	 
+	    if (this == null)
+	      throw new TypeError();
+	 
+	    var t = Object(this);
+	    var len = t.length >>> 0;
+	    if (typeof fun != "function")
+	      throw new TypeError();
+	 
+	    var res = [];
+	    var thisp = arguments[1];
+	    for (var i = 0; i < len; i++)
+	    {
+	      if (i in t)
+	      {
+	        var val = t[i]; // in case fun mutates this
+	        if (fun.call(thisp, val, i, t))
+	          res.push(val);
+	      }
+	    }
+	 
+	    return res;
+	  };
+	}
+
+	/*******************************
 	* LIB JS
 	*******************************/
 	var Console =  {
@@ -26,11 +59,6 @@ $(document).ready(function() {
 
     // Object factory
     var factory = function(modelType, arg) {
-//        var properties = {};
-//        $.each(arg, function(key, value) {
-//            properties[key] = {value: value};
-//        });
-//        return Object.create(modelType.prototype, properties)
         var obj = new modelType;
         $.each(obj.__meta, function(index, propName) {
             if (arg[propName]) {
@@ -45,25 +73,69 @@ $(document).ready(function() {
     };
 
     function Model() {};
-    Model.prototype.save=  function() {
-        Console.log("saving model");
+    Model.prototype.save =  function() {
+    };
+    Model.prototype.findAll = function() {
+    	return Store.all(this.constructor);
     };
     Model.prototype.update = function() {
-        Console.log("updating model");
     };
     Model.prototype.destroy = function() {
-        Console.log("delete model");
     };
     Model.prototype.find = function(param) {
-        Console.log("looking for model with param" + param );
+        Store.find(this.constructor, param);
     };
-	Console.log("Loading application");
+
+    var Store = {
+		object: [],
+		_store: {},
+		_ids: [],
+
+		load: function(modelType, collection) {
+			var modelName = modelType.prototype.constructor;
+			if (!this._store[modelName]) {
+				this._store[modelName] = [];
+			}
+			if (!this._ids[modelName]) {
+				this._ids[modelName] = -1;
+			}
+			var length = collection.length;
+            for (i = 0; i < length; i++) {
+            	var obj = factory(modelType, collection[i]);
+				this._store[modelName].push(obj);
+				if (obj.id > this._ids[modelName])
+					this._ids[modelName] = obj.id;
+            }
+		},
+		getNextId: function(modelType) {
+			this._ids[modelType.prototype.constructor] == this._ids[modelType.prototype.constructor]++;
+			return this._ids[modelType.prototype.constructor];
+		},
+		all: function(modelType) {
+			return this._store[modelType]
+		},
+		find: function(modelType, callback) {
+			var models = this._store[modelType];
+			return models.filter(callback);
+		},
+		save: function(obj) {
+			if (!obj.id) {
+				this._ids[obj.constructor] = this._ids[obj.constructor] +1;
+				var modelLastId = this._ids[obj.constructor];
+				modelLastId++;
+				obj.id = modelLastId;
+				this._store[obj.constructor].push(obj);
+			}
+			return JSON.stringify(obj);
+		}
+	}
 
 	/****************
 	*	Models
 	****************/
     function Flow() {
         this.__meta = [
+        	"id",
             "name",
             "company",
             "process",
@@ -73,38 +145,22 @@ $(document).ready(function() {
         ]
     };
     Flow.prototype = new Model;
+    Flow.prototype.constructor = "Flow";
 
 	Flow.prototype.save = function() {
-			Console.log("Saving Flow and launching event");
-			$(document).triggerHandler("Flow.save", this);
+		Console.log("Saving Flow and launching event");
+		Store.save(this);
+		$(document).triggerHandler("Flow.save", this);
 	};
-
-	var FlowList = {
-		flows: [],
-		loadFlows: function(rawFlows) {
-            var length = rawFlows.length;
-            for (i = 0; i < length; i++) {
-                var f = factory(Flow, rawFlows[i]);
-                FlowList.flows.push(f);
-            }
-		},
-
-        getFlows: function() {
-            return this.flows;
-        },
-
-		getFlowByName: function(name) {
-			var flowsLength = this.flows.length;
-			var flow = null;
-			for (i = 0; i<flowsLength; i++) {
-				var f = this.flows[i];
-				if (f.name == name) {
-					flow = f;
-					break;
-				}
-			}
-			return flow;
-		}
+	Flow.prototype.findByName = function(name) {
+		return Store.find(this.constructor, function(item, index, val) {
+			return item.name == name;
+		})[0];
+	};
+	Flow.prototype.findById = function(id) {
+		return Store.find(this.constructor, function(item, index, val) {
+			return item.id == id;
+		})[0];
 	};
 
 	/****************
@@ -112,26 +168,29 @@ $(document).ready(function() {
 	****************/
 	var FlowController = {
 		list: function() {
-			flowListView.render(FlowList.getFlows());
+			flowListView.render(new Flow().findAll());
 		},
-		show: function(name) {
-			var flow = FlowList.getFlowByName(name);
+		show: function(id) {
+			var flow = new Flow().findById(id);
 			flowDetailView.render(flow);
 		},
 		save: function(flow, callback) {
-			Console.log("Asking the flow to save himself ");
-			Console.log(flow);
-			var f = FlowList.getFlowByName(flow.name)
-			// Validation
-			if (f) {
+			// Property merge
+			if (flow.id) {
+				var f = new Flow().findById(flow.id);
 				var flow = $.extend(f, true, flow);
+			// Not in the store
 			} else {
-
+				flow = factory(Flow, flow);
 			}
 			flow.save();
 
 			if (callback)
 				callback();
+		},
+		addFlowForm: function() {
+			var flow = factory(Flow, {})
+			flowDetailView.render(flow);
 		}
 	};
 
@@ -142,38 +201,42 @@ $(document).ready(function() {
 	var flowListView = {
 		render: function(flows) {
 			if (!flows) {
-				Console.log("flows is undefined");
-				var flows = FlowList.getFlows();
+				var flows = new Flow().findAll();
 			}
-			var html = ["<ul>"];
+			var html = ["<a href='' class='add-flow'>Add flow</a><ul>"];
 			var flowsLength = flows.length;
 			for (i = 0; i<flowsLength; i++) {
 				var flow = flows[i];
 				html.push("<li>");
-				html.push("<span class='id'>" + flow.name + "</span>");
+				html.push("<span class='id'><input type='hidden' name='id' value='" + flow.id + "'/>" + flow.name + "</span>");
 				html.push("</li>");
 			}
 			html.push("</ul>");
-			$("#app").html(html.join(""));
+			$("#app #flow-list").html(html.join(""));
 
 			this.bind();
 		},
 		bind: function() {
 			$("#app").on("click.FlowList", "ul li", function(e) {
 				e.preventDefault();
-				var name = $(this).find(".id").html();
-				FlowController.show(name);
+				var id = $(this).find(".id input").val();
+				FlowController.show(id);
 			});
 
-			$(document).on("Flow.save", function(e) {
-				Console.log("Flow list updated, rerender the view");
+			$("#app").on("click.addFlow", "a.add-flow", function(e) {
+				e.preventDefault();
+				FlowController.addFlowForm();
+			});
+
+			$(document).on("Flow.save.flowlist", function(e) {
 				flowListView.destroy();
 				flowListView.render();
 			});
 		},
 		unbind: function() {
 			$("#app").unbind("click.FlowList");
-			$(document).unbind("Flow.save");
+			$("#app").unbind("click.addFlow");
+			$(document).unbind("Flow.save.flowlist");
 		},
 		destroy: function() {
 			this.unbind();
@@ -182,44 +245,44 @@ $(document).ready(function() {
 
 	var flowDetailView = {
 		render: function(flow) {
-			var html = "<div class='modal' id='flow-detail'><div class='title'>" + flow.name + "<a class='close'>X</a></div><div class='detail'>" + 
-					"<input type='hidden' name='name' value='" + flow.name + "'><br/>" +
+			if (!flow) {
+				return;
+			}
+			var html = "<form><div class='title'>Flow " + flow.name + " detail <a class='close'>X</a></div><div class='detail'>" + 
+					"<input type='hidden' name='id' value='" + flow.id + "'><br/>" +
+					"<label>Name:</label><input type='text' name='name' value='" + flow.name + "'><br/>" +
 					"<label>Company:</label><input type='text' name='company' value='" + flow.company + "'><br/>" +
 					"<label>Process:</label><input type='text' name='process' value='" + flow.process + "'><br/>" +
 					"<label>Owner:</label><input type='text' name='owner' value='" + flow.owner + "'><br/>" +
 					"<label>startDate:</label><input type='text' name='startDate' value='" + flow.startDate + "'><br/>" +
-					"<label>endDate:</label><input type='text' name='startDate' value='" + flow.endDate + "'><br/>" +
-				"</div><button class='submit'>Enregistrer</button></div>";
-			if ($("#app #flow-detail").length > 0) {
-				$("#app #flow-detail").html(html);
-			} else {
-				$("#app").append(html);
-			}
+					"<label>endDate:</label><input type='text' name='endDate' value='" + flow.endDate + "'><br/>" +
+				"</div><input type='submit' value='Enregistrer'/></form>";
+			$("#flow-detail").html(html);
 			this.bind();
+		},
+		save: function(event) {
+			event.preventDefault();
+			Console.log("flowDetailView save");
+			Console.log(event);
+			var flow = bindFormToObj($("#app #flow-detail form"));
+			//FlowController.save(flow, flowDetailView.close);
 		},
 		bind: function() {
 			// Close popup
 			$("#app").on("click.Flow", "#flow-detail .close", flowDetailView.close);
 
 			// Save change
-			$("#app").on("click.Flow", "#flow-detail .submit", function(e) {
-				var flow = bindFormToObj($("#app #flow-detail .detail"));
-				Console.log(e);
-				flowDetailView.close();
-				FlowController.save(flow);
-			});
+			$("#app #flow-detail").on("submit.Flow", "form", this.save);
 		},
 		unbind: function() {
-			Console.log("unbinding event attached to flow detail view");
-			$("#app").unbind("click.Flow");
+			$("#app").unbind("click.Flow, submit.Flow");
+			$("#app").unbind("submit.Flow");
 		},
 		close: function() {
-			Console.log("close flow detail view");
-			$("#app #flow-detail").remove();
 			flowDetailView.unbind();
+			$("#app #flow-detail form").remove();
 		}
 	}
-	Console.log("Application loaded");
 
 	// Sample data
 	var flows =  [
@@ -242,9 +305,7 @@ $(document).ready(function() {
 			id: 2
 		},
 	];
-	FlowList.loadFlows(flows);
+	Store.load(Flow, flows);
 
 	FlowController.list();
-
-	Console.log("launching application");
 });

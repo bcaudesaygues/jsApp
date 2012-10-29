@@ -2,13 +2,38 @@
 <html lang=en>
 	<head>
 		<meta charset=utf-8>
-		<title>Sample HTML5 index.html from MyThinkPond</title>
+		<title>My JS App</title>
 	</head>
 	<body>
 		<div id="app" class="content-wrapper">
-
+			<div id="flow-list"></div>
+			<div id="flow-detail"></div>
 		</div>
 	</body>
+	<script src="javascripts/json2.js"></script>
 	<script src="javascripts/jquery.js"></script>
 	<script src="javascripts/app.js"></script>
 </html>
+
+<!--
+<form>
+	<div class='title'>Flow " + flow.name + " detail <a class='close'>X</a></div>
+	<div class='detail'>" + 
+		<input type='hidden' name='id' value='" + flow.id + "'>
+		<br/>
+		<label>Name:</label><input type='text' name='name' value='" + flow.name + "'>
+		<br/>
+		<label>Company:</label><input type='text' name='company' value='" + flow.company + "'>
+		<br/>
+		<label>Process:</label><input type='text' name='process' value='" + flow.process + "'>
+		<br/>
+		<label>Owner:</label><input type='text' name='owner' value='" + flow.owner + "'>
+		<br/>
+		<label>startDate:</label><input type='text' name='startDate' value='" + flow.startDate + "'>
+		<br/>
+		<label>endDate:</label><input type='text' name='endDate' value='" + flow.endDate + "'>
+		<br/>
+	</div>
+	<input type='submit' value='Enregistrer'/>
+</form>
+-->
