@@ -68,6 +68,7 @@ $(document).ready(function() {
             }
         }, arg);
 
+        Console.log(obj);
         obj.prototype = new modelType;
         return obj;
     };
@@ -136,7 +137,7 @@ $(document).ready(function() {
     function Flow() {
         this.__meta = [
         	"id",
-            "name",
+            "label",
             "company",
             "process",
             "owner",
@@ -208,7 +209,7 @@ $(document).ready(function() {
 			for (i = 0; i<flowsLength; i++) {
 				var flow = flows[i];
 				html.push("<li>");
-				html.push("<span class='id'><input type='hidden' name='id' value='" + flow.id + "'/>" + flow.name + "</span>");
+				html.push("<span class='id'><input type='hidden' name='id' value='" + flow.id + "'/>" + flow.label + "</span>");
 				html.push("</li>");
 			}
 			html.push("</ul>");
@@ -248,9 +249,9 @@ $(document).ready(function() {
 			if (!flow) {
 				return;
 			}
-			var html = "<form><div class='title'>Flow " + flow.name + " detail <a class='close'>X</a></div><div class='detail'>" + 
+			var html = "<form><div class='title'>Flow " + flow.label + " detail <a class='close'>X</a></div><div class='detail'>" + 
 					"<input type='hidden' name='id' value='" + flow.id + "'><br/>" +
-					"<label>Name:</label><input type='text' name='name' value='" + flow.name + "'><br/>" +
+					"<label>Name:</label><input type='text' name='name' value='" + flow.label + "'><br/>" +
 					"<label>Company:</label><input type='text' name='company' value='" + flow.company + "'><br/>" +
 					"<label>Process:</label><input type='text' name='process' value='" + flow.process + "'><br/>" +
 					"<label>Owner:</label><input type='text' name='owner' value='" + flow.owner + "'><br/>" +
@@ -287,27 +288,27 @@ $(document).ready(function() {
 		}
 	}
 
-	// Sample data
-	var flows =  [
-		{
-			name: "flow1",
-			company: "company1",
-			process: "process1",
-			owner: "nmedda",
-			startDate: "01/01/2001",
-			endDate: "01/02/2001",
-			id: 1
-		},
-		{
-			name: "flow2",
-			company: "company2",
-			process: "process1",
-			owner: "nmedda",
-			startDate: "01/01/2001",
-			endDate: "01/02/2001",
-			id: 2
-		},
-	];
+	// // Sample data
+	// var flows =  [
+	// 	{
+	// 		name: "flow1",
+	// 		company: "company1",
+	// 		process: "process1",
+	// 		owner: "nmedda",
+	// 		startDate: "01/01/2001",
+	// 		endDate: "01/02/2001",
+	// 		id: 1
+	// 	},
+	// 	{
+	// 		name: "flow2",
+	// 		company: "company2",
+	// 		process: "process1",
+	// 		owner: "nmedda",
+	// 		startDate: "01/01/2001",
+	// 		endDate: "01/02/2001",
+	// 		id: 2
+	// 	},
+	// ];
 	Store.load(Flow, flows);
 
 	FlowController.list();
