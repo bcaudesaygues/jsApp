@@ -265,18 +265,21 @@ $(document).ready(function() {
 			Console.log("flowDetailView save");
 			Console.log(event);
 			var flow = bindFormToObj($("#app #flow-detail form"));
-			//FlowController.save(flow, flowDetailView.close);
+			FlowController.save(flow, flowDetailView.close);
 		},
 		bind: function() {
+			// Remove all previous event handler
+			this.unbind();
+
 			// Close popup
-			$("#app").on("click.Flow", "#flow-detail .close", flowDetailView.close);
+			$("#app #flow-detail").on("click.Flow", ".close", flowDetailView.close);
 
 			// Save change
 			$("#app #flow-detail").on("submit.Flow", "form", this.save);
 		},
 		unbind: function() {
-			$("#app").unbind("click.Flow, submit.Flow");
-			$("#app").unbind("submit.Flow");
+			$("#app #flow-detail").unbind("click.Flow");
+			$("#app #flow-detail").unbind("submit.Flow");
 		},
 		close: function() {
 			flowDetailView.unbind();
