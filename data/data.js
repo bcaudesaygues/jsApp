@@ -7,7 +7,7 @@ var flows = [
 		"startDate":1346623200000,
 		"endDate":1351375200000,
 		"steps":[
-			457,6880,446,
+			457,6880,446
 	    ],
 		"isEditable":true,
 		"attachments":[]},
@@ -32,7 +32,7 @@ var flows = [
 		"startDate":1346623200000,
 		"endDate":1351375200000,
 		"steps":[
-			489,484,479,
+			489,484,479
 		],
 		"isEditable":true,
 		"attachments":[]},
@@ -45,7 +45,7 @@ var flows = [
 		"startDate":1347832800000,
 		"endDate":1348783200000,
 		"steps":[
-			505,502,497,496,
+			505,502,497,496
 		],
 		"isEditable":true,
 		"attachments":[]},

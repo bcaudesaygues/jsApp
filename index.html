@@ -28,17 +28,26 @@
 			<label>Name:</label><input type='text' name='label' value="{{label}}">
 			<br/>
 			{{#get_company}}
-				<label>Company:</label><input type='text' name='company' value='{{name}}'>
+				<label>Company:</label><input type='text' name='company' value='{{id}}'>
+				<span class="help-inline">
+					{{name}}
+				</span>
 				<br/>
 			{{/get_company}}
 
 			{{#get_process}}
-				<label>Process:</label><input type='text' name='process' value='{{name}}'>
+				<label>Process:</label><input type='text' name='process' value='{{id}}'>
+				<span class="help-inline">
+					{{name}}
+				</span>
 				<br/>
 			{{/get_process}}
 
 			{{#get_owner}}
-				<label>Owner:</label><input type='text' name='owner' value='{{name}}'>
+				<label>Owner:</label><input type='text' name='owner' value='{{id}}'>
+				<span class="help-inline">
+					{{name}}
+				</span>
 				<br/>
 			{{/get_owner}}
 

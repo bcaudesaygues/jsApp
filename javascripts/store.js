@@ -91,7 +91,8 @@
             if(this._store[obj.constructor] === undefined) {
                 this._store[obj.constructor] = [];
             }
-            this._store[obj.constructor].push(key);
+            if (!_.contains(this._store[obj.constructor], key))
+                this._store[obj.constructor].push(key);
         },
         bind: function() {
             if (document.addEventListener) {
