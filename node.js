@@ -34,6 +34,10 @@ http.createServer(function(req, res) {
   } else if(req.url == "/steps.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('data/steps.js'));
+  // Underscore
+  } else if(req.url == "/javascripts/underscore.js") {
+    res.writeHead(200, {'Content-Type': 'text/javascript'});
+    res.end(fs.readFileSync('javascripts/underscore.js'));
   // JQuery
   } else if(req.url == "/javascripts/jquery.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});

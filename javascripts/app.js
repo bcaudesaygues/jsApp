@@ -38,6 +38,11 @@ $(document).ready(function() {
       };
     }
 
+	Object.defineGetterAndSetter = function(obj, property, getterAndSetter) {
+		obj["get_"+property] = getterAndSetter.get;
+		obj["set_"+property] = getterAndSetter.set;
+	}
+
 	/*******************************
 	* LIB JS
 	*******************************/
@@ -62,13 +67,16 @@ $(document).ready(function() {
         var obj = new modelType;
         _.each(obj.__meta, function(propName, index) {
             if (this[propName]) {
-                obj[propName] = this[propName];
+            	if (obj["set_" + propName]) {
+            		obj["set_" + propName](this[propName]);
+            	} else {
+                	obj[propName] = this[propName];
+                }
             } else {
                 obj[propName] = "";
             }
         }, arg);
 
-        Console.log(obj);
         obj.prototype = new modelType;
         return obj;
     };
@@ -96,7 +104,7 @@ $(document).ready(function() {
 			return item.id == id;
 		})[0];
 	};
-
+	
     var Store = {
 		object: [],
 		_store: {},
@@ -158,40 +166,49 @@ $(document).ready(function() {
 	    ]
 
 	    // Process getter/setter
-	    this.__defineGetter__("process", function() {
-	    	return new Process().findById(this._processId);
-	    });
-	    this.__defineSetter__("process", function(processId) {
-	    	this._processId = processId;
-	    });
-
+	    Object.defineGetterAndSetter(this, "process", {
+	    	get: function() {
+	    		return new Process().findById(this._processId);
+    		},
+    		set: function(processId) {
+	    		this._processId = processId;
+	    	}
+    	});
+	   
 	    // Company getter/setter
-	    this.__defineGetter__("company", function() {
-	    	return new Company().findById(this._companyId);
-	    });
-	    this.__defineSetter__("company", function(companyId) {
-	    	this._companyId = companyId;
+	    Object.defineGetterAndSetter(this, "company", {
+	    	get: function() {
+		    	return new Company().findById(this._companyId);
+		    },
+		    set: function(companyId) {
+		    	this._companyId = companyId;
+		    }
 	    });
 
 	    // Owner getter/setter
-	    this.__defineGetter__("owner", function() {
-	    	return new User().findById(this._ownerId);
-	    });
-	    this.__defineSetter__("owner", function(ownerId) {
-	    	this._ownerId = ownerId;
+	    Object.defineGetterAndSetter(this, "owner", {
+	    	get: function() {
+		    	return new User().findById(this._ownerId);
+		    },
+		    set: function(ownerId) {
+		    	this._ownerId = ownerId;
+		    }
 	    });
 
 	    // Company getter/setter
-	    this.__defineGetter__("steps", function() {
-	    	var steps = new Step().findByIds(this._stepsId);
-	    	_.each(steps, function(step, index) {
-	    		step.flow = this;
-	    	});
-	    	return steps
+	    Object.defineGetterAndSetter(this, "steps", {
+	    	get: function() {
+		    	var steps = new Step().findByIds(this._stepsId);
+		    	_.each(steps, function(step, index) {
+		    		step.flow = this;
+		    	});
+		    	return steps
+		    },
+		    set: function(stepsId) {
+		    	this._stepsId = stepsId;
+		    }
 	    });
-	    this.__defineSetter__("steps", function(stepsId) {
-	    	this._stepsId = stepsId;
-	    });
+	    
 	};
 	Flow.prototype = new Model;
 	Flow.prototype.constructor = "Flow";
@@ -206,11 +223,6 @@ $(document).ready(function() {
 			return item.name == name;
 		})[0];
 	};
-	// Flow.prototype.findById = function(id) {
-	// 	return Store.find(this.constructor, function(item, index, val) {
-	// 		return item.id == id;
-	// 	})[0];
-	// };
 
 	// --- Process
 	function Process() {
@@ -261,11 +273,13 @@ $(document).ready(function() {
 		]
 
 		// manager getter/setter
-		this.__defineGetter__("manager", function() {
-			return new User().findById(this._managerId);
-		});
-		this.__defineSetter__("manager", function(managerId) {
-			this._managerId = managerId;
+		Object.defineGetterAndSetter(this, "manager", {
+			get: function() {
+				return new User().findById(this._managerId);
+			},
+			set: function(managerId) {
+				this._managerId = managerId;
+			}
 		});
 	}
 
@@ -316,8 +330,7 @@ $(document).ready(function() {
 			if (!flows) {
 				return;
 			}
-			var flows = {"flows" :flows};
-			var html = Mustache.render($("#flow-list-template").html(), flows);
+			var html = Mustache.render($("#flow-list-template").html(), {"flows": flows});
 			$("#app #flow-list").html(html);
 
 			this.bind();
@@ -354,9 +367,8 @@ $(document).ready(function() {
 			if (!flow) {
 				return;
 			}
-			var html = Mustache.render($("#flow-detail-template").html(), {"flow": flow, "steps": flow.steps});
+			var html = Mustache.render($("#flow-detail-template").html(), {"flow": flow});
 			$("#flow-detail").html(html);
-			Console.log(flow.steps);
 			this.bind();
 		},
 		save: function(event) {

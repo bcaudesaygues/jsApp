@@ -162,7 +162,8 @@ var Mustache;
               value = value[names[i++]];
             }
           } else {
-            value = context.view[name];
+            if (context.view != null)
+              value = context.view[name];
           }
 
           if (value != null) {

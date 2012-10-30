@@ -35,31 +35,44 @@
 </html>
 
 <div id="flow-detail-template" class="display-none">
+	{{#flow}}
 	<form style="width: 400px; float: left;">
-		<div class='title'>Flow {{flow.label}} detail <a class='close'>X</a></div>
+		<div class='title'>Flow {{label}} detail <a class='close'>X</a></div>
 		<div class='detail'>
 			<input type='hidden' name='id' value='{{flow.id}}'>
 			<br/>
-			<label>Name:</label><input type='text' name='label' value='{{flow.label}}'>
+			<label>Name:</label><input type='text' name='label' value="{{label}}">
 			<br/>
-			<label>Company:</label><input type='text' name='company' value='{{flow.company.name}}'>
+			{{#get_company}}
+				<label>Company:</label><input type='text' name='company' value='{{name}}'>
+				<br/>
+			{{/get_company}}
+
+			{{#get_process}}
+				<label>Process:</label><input type='text' name='process' value='{{name}}'>
+				<br/>
+			{{/get_process}}
+
+			{{#get_owner}}
+				<label>Owner:</label><input type='text' name='owner' value='{{name}}'>
+				<br/>
+			{{/get_owner}}
+
+			<label>startDate:</label><input type='text' name='startDate' value='{{startDate}}'>
 			<br/>
-			<label>Process:</label><input type='text' name='process' value='{{flow.process.name}}'>
-			<br/>
-			<label>Owner:</label><input type='text' name='owner' value='{{flow.owner.name}}'>
-			<br/>
-			<label>startDate:</label><input type='text' name='startDate' value='{{flow.startDate}}'>
-			<br/>
-			<label>endDate:</label><input type='text' name='endDate' value='{{flow.endDate}}'>
+			<label>endDate:</label><input type='text' name='endDate' value='{{endDate}}'>
 			<br/>
 		</div>
 		<input type='submit' value='Enregistrer'/>
 	</form>
+	{{/flow}}
 
 	<div class="steps" style="width: 400px; float: right;">
-		{{#flow.steps}}
-			<li>{{label}} - {{details}} - {{manager.name}} - {{endDate}} - {{flow.label}}</li>
-		{{/flow.steps}}
+		{{#flow}}
+			{{#get_steps}}
+				<li>{{label}} - {{details}} - {{manager.name}} - {{endDate}} - {{flow.label}}</li>
+			{{/get_steps}}
+		{{/flow}}
 	</div>
 
 </div>
@@ -69,7 +82,7 @@
 	{{#flows}}
 		<li>
 			<input type="hidden" name="id" value="{{id}}" />
-			{{label}}
+			{{label}} - {{#get_process}} {{name}} {{/get_process}}
 		</li>
 	{{/flows}}
 </div>
