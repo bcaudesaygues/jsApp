@@ -1,0 +1,62 @@
+.display-none {
+	display: none;
+}
+
+.flow-detail-view {
+	top: 20px;
+	left: 100px;
+	position: absolute;
+	width: 500px;
+	border: 1px solid black;
+	box-shadow: 0 0 5px black;
+	background: white;
+	padding-bottom: 10px;
+}
+.flow-detail-view form {
+	width: 100%;
+}
+
+.flow-detail-view .close {
+	float: right;
+}
+
+.flow-detail-view .title {
+	padding: 10px;
+	border-bottom: 1px solid black;
+}
+.flow-detail-view .detail {
+	padding: 10px;
+}
+
+.flow-step {
+	display: inline-block;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+
+/* FORM */
+label {
+	width: 100px;
+	display: inline-block;
+	line-height: 18px;
+}
+input[type="text"] {
+	line-height: 18px;
+	border: none;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding-left: 2px;
+}
+input[type="text"]:focus, input[type="text"]:active {
+	outline: none;
+	border: none;
+	border: 1px solid black;
+	border-radius: 3px;
+}
+
+input[type="submit"] {
+	float: right;
+	margin-right: 10px;
+}

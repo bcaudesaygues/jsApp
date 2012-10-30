@@ -3,16 +3,13 @@
 	<head>
 		<meta charset=utf-8>
 		<title>My JS App</title>
+		<link rel="stylesheet" href="/stylesheets/main.css"/>
 	</head>
-	<style>
-		.display-none {
-			display: none;
-		}
-	</style>
 	<body>
 		<div id="app" class="content-wrapper">
 			<div id="flow-list"></div>
-			<div id="flow-detail"></div>
+			<div id="flow-detail" class="flow-detail-view display-none"></div>
+			<div id="step-detail" class="step-detail-view display-none"></div>
 		</div>
 	</body>
 
@@ -30,6 +27,7 @@
 	<script src="/processes.js"></script>
 	<script src="/tasks.js"></script>
 	<script src="/steps.js"></script>
+	<script src="/tasks.js"></script>
 	<script src="/data.js"></script>
 
 	<!-- APP -->
@@ -38,9 +36,9 @@
 
 <div id="flow-detail-template" class="display-none">
 	{{#flow}}
-	<form style="width: 400px; float: left;">
 		<div class='title'>Flow {{label}} detail <a class='close'>X</a></div>
 		<div class='detail'>
+		<form>
 			<input type='hidden' name='id' value='{{flow.id}}'>
 			<br/>
 			<label>Name:</label><input type='text' name='label' value="{{label}}">
@@ -64,27 +62,32 @@
 			<br/>
 			<label>endDate:</label><input type='text' name='endDate' value='{{endDate}}'>
 			<br/>
+			<input type='submit' value='Enregistrer'/>
+		</form>
 		</div>
-		<input type='submit' value='Enregistrer'/>
-	</form>
 	{{/flow}}
-
-	<div class="steps" style="width: 400px; float: right;">
-		{{#flow}}
-			{{#get_steps}}
-				<li>{{label}} - {{details}} - {{manager.name}} - {{endDate}} - {{flow.label}}</li>
-			{{/get_steps}}
-		{{/flow}}
-	</div>
-
 </div>
 
 <div id="flow-list-template" class="display-none">
 	<a href='' class='add-flow'>Add flow</a><ul>
 	{{#flows}}
-		<li>
+		<dt>
 			<input type="hidden" name="id" value="{{id}}" />
 			{{label}} - {{#get_process}} {{name}} {{/get_process}}
-		</li>
+		</dt>
+		<dd>
+			{{#get_steps}}
+				<div class="flow-step"><input type="hidden" name="id" value="{{id}}"/> {{label}}</div>
+			{{/get_steps}}
+		</dd>
 	{{/flows}}
+</div>
+
+<div id="step-detail-template" class="display-none">
+	<div>
+		{{#step}}
+			{{label}}
+			{{endDate}}
+		{{/step}}
+	</div>
 </div>

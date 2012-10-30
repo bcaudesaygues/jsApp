@@ -56,6 +56,10 @@ http.createServer(function(req, res) {
   } else if(req.url == "/javascripts/mustache.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('javascripts/mustache.js'));
+  // CSS
+  } else if(req.url == "/stylesheets/main.css") {
+    res.writeHead(200, {'Content-Type': 'text/css'});
+    res.end(fs.readFileSync('stylesheets/main.css'));
   // 404
   } else {
     res.writeHead(404, {'Content-Type': 'text/plain'});

@@ -150,6 +150,7 @@ $(document).ready(function() {
 	Flow.prototype.save = function() {
 		Console.log("Saving Flow and launching event");
 		window.store.save(this);
+		$(document).triggerHandler("Flow.save", this);
 	};
 	Flow.prototype.findByName = function(name) {
 		return window.store.find(this.constructor, function(item, index, val) {
@@ -208,10 +209,19 @@ $(document).ready(function() {
 		// manager getter/setter
 		Object.defineGetterAndSetter(this, "manager", {
 			get: function() {
-				return new User().findById(this._managerId);
+				return Model.prototype.findById(User, this._managerId);
 			},
 			set: function(managerId) {
 				this._managerId = managerId;
+			}
+		});
+
+		Object.defineGetterAndSetter(this, "tasks", {
+			get: function() {
+				return Model.prototype.findByIds(Task, this._tasksId);
+			},
+			set: function(tasksId) {
+				this._tasksId = tasksId;
 			}
 		});
 	}
@@ -219,6 +229,18 @@ $(document).ready(function() {
 	Step.prototype = new Model;
 	Step.prototype.constructor = "Step";
 
+	function Task() {
+		this.__meta = [
+			"id",
+			"name",
+			"status",
+			"alertMessage",
+			"actor",
+			"isEditable"
+		]
+	}
+	Task.prototype = new Model;
+	Task.prototype.constructor = "Task";
 
 	/****************
 	*	Controllers
@@ -252,6 +274,13 @@ $(document).ready(function() {
 		}
 	};
 
+	var StepController = {
+		show: function(id) {
+			var step = Step.findById(Step, id);
+			stepDetailView.render(step);
+		}
+	};
+
 
 	/****************
 	* 	Views
@@ -270,26 +299,38 @@ $(document).ready(function() {
 			this.bind();
 		},
 		bind: function() {
-			$("#app").on("click.FlowList", "ul li", function(e) {
+			// Display flow form
+			$("#app").on("click.FlowList", "dt", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
 				FlowController.show(id);
 			});
 
+			// Display new flow form
 			$("#app").on("click.addFlow", "a.add-flow", function(e) {
 				e.preventDefault();
 				FlowController.addFlowForm();
 			});
 
+			// Save flow
 			$(document).on("Flow.save.flowlist", function(e) {
 				flowListView.destroy();
 				flowListView.render();
+			});
+
+			// Display step
+			$("#app").on("click.showStep", "dd .flow-step", function(e) {
+				Console.log("Show step detail");
+				e.preventDefault();
+				var id = $(this).find("input[name='id']").val();
+				StepController.show(id);
 			});
 		},
 		unbind: function() {
 			$("#app").unbind("click.FlowList");
 			$("#app").unbind("click.addFlow");
 			$(document).unbind("Flow.save.flowlist");
+			$("#app").unbind("click.showStep");
 		},
 		destroy: function() {
 			this.unbind();
@@ -304,6 +345,7 @@ $(document).ready(function() {
 			var html = Mustache.render($("#flow-detail-template").html(), {"flow": flow});
 			$("#flow-detail").html(html);
 			this.bind();
+			$("#flow-detail").removeClass("display-none");
 		},
 		save: function(event) {
 			event.preventDefault();
@@ -325,16 +367,18 @@ $(document).ready(function() {
 			$("#app #flow-detail").unbind("submit.Flow");
 		},
 		close: function() {
+			$("#flow-detail").addClass("display-none");
 			flowDetailView.unbind();
-			$("#app #flow-detail form").remove();
+			$("#app #flow-detail").html("");
 		}
-	}
+	};
 
 	window.store.insert(Flow, flows);
 	window.store.insert(Process, processes);
 	window.store.insert(Company, companies);
 	window.store.insert(User, users);
 	window.store.insert(Step, steps);
+	window.store.insert(Task, tasks);
 
 	FlowController.list();
 });
