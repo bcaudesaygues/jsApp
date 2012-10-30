@@ -8,8 +8,8 @@
 	<body>
 		<div id="app" class="content-wrapper">
 			<div id="flow-list"></div>
-			<div id="flow-detail" class="flow-detail-view display-none"></div>
-			<div id="step-detail" class="step-detail-view display-none"></div>
+			<div id="flow-detail" class="modal flow-detail-view display-none"></div>
+			<div id="step-detail" class="modal step-detail-view display-none"></div>
 		</div>
 	</body>
 
@@ -36,8 +36,8 @@
 
 <div id="flow-detail-template" class="display-none">
 	{{#flow}}
-		<div class='title'>Flow {{flow.label}} detail <a class='close'>X</a></div>
-		<div class='detail'>
+		<div class='title'>Flow {{label}} detail <a class='close'>X</a></div>
+		<div class='content'>
 		<form>
 			<input type='hidden' name='id' value='{{flow.id}}'>
 			<br/>
@@ -73,7 +73,7 @@
 	{{#flows}}
 		<dt>
 			<input type="hidden" name="id" value="{{id}}" />
-			{{label}} - {{#get_process}} {{name}} {{/get_process}}
+			{{label}} - {{#get_process}} {{name}} {{/get_process}} | {{steps.length}}
 		</dt>
 		<dd>
 			{{#get_steps}}
@@ -84,10 +84,24 @@
 </div>
 
 <div id="step-detail-template" class="display-none">
-	<div>
+	<div class="title">
+		{{#step}}
+			{{label}}
+		{{/step}}
+
+		<a class="close">X</a>
+	</div>
+	<div class="content">
 		{{#step}}
 			{{label}}
 			{{endDate}}
+			{{#get_tasks}}
+				<li>{{name}} - 
+					{{#get_actor}} 
+						{{name}} 
+					{{/get_actor}}
+					 - {{status}}</li>
+			{{/get_tasks}}
 		{{/step}}
 	</div>
 </div>

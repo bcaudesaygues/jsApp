@@ -97,7 +97,7 @@ $(document).ready(function() {
 	        "startDate",
 	        "endDate",
 	        "steps"
-	    ]
+	    ];
 
 	    // Process getter/setter
 	    Object.defineGetterAndSetter(this, "process", {
@@ -238,6 +238,15 @@ $(document).ready(function() {
 			"actor",
 			"isEditable"
 		]
+
+		Object.defineGetterAndSetter(this, "actor", {
+			get: function() {
+				return Model.prototype.findById(User, this.actor)
+			},
+			set: function(actorId) {
+				this.actor = actorId;
+			}
+		})
 	}
 	Task.prototype = new Model;
 	Task.prototype.constructor = "Task";
@@ -250,13 +259,13 @@ $(document).ready(function() {
             flowListView.render(Model.prototype.findAll(Flow));
 		},
 		show: function(id) {
-			var flow = Model.prototype.findById(Flow, Flow,id);
+			var flow = Model.prototype.findById(Flow, id);
 			flowDetailView.render(flow);
 		},
 		save: function(flow, callback) {
 			// Property merge
 			if (flow.id) {
-				var f = Flow.findById(Flow, flow.id);
+				var f = Model.prototype.findById(Flow, flow.id);
 				var flow = $.extend(f, true, flow);
 			// Not in the store
 			} else {
@@ -276,7 +285,7 @@ $(document).ready(function() {
 
 	var StepController = {
 		show: function(id) {
-			var step = Step.findById(Step, id);
+			var step = Model.prototype.findById(Step, id);
 			stepDetailView.render(step);
 		}
 	};
@@ -400,12 +409,12 @@ $(document).ready(function() {
 		}
 	};
 
-	window.store.insert(Flow, flows);
-	window.store.insert(Process, processes);
 	window.store.insert(Company, companies);
+	window.store.insert(Process, processes);
 	window.store.insert(User, users);
-	window.store.insert(Step, steps);
 	window.store.insert(Task, tasks);
+	window.store.insert(Step, steps);
+	window.store.insert(Flow, flows);
 
 	FlowController.list();
 });

@@ -69,9 +69,10 @@
         },
         findIds: function(modelType, ids) {
             var elems = [];
-            for(var elem in ids) {
-                elems.push(this.find(modelType,elem));   
-            }
+            _.each(ids, function(id, index) {
+                var elem = this.find(modelType, id);
+                elems.push(elem);
+            }, this);
             return elems;
         },
         save: function(obj) {
