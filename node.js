@@ -7,9 +7,9 @@ http.createServer(function(req, res) {
     res.end(fs.readFileSync('index.html'));
 
   // app
-  } else if(req.url == "/javascripts/app.js") {
+  } else if(req.url.match("/javascripts/*")) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end(fs.readFileSync('javascripts/app.js'));
+    res.end(fs.readFileSync(req.url.substr(1)));
   // data
   } else if(req.url == "/data.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
@@ -65,4 +65,4 @@ http.createServer(function(req, res) {
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.end("Page Could Not Be Found");
   }
-}).listen("31606");
+}).listen(process.env.PORT);
