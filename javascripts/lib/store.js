@@ -111,5 +111,5 @@
             }
         }
     }
-    return Store;
+    window.store = Store;
 })(window,window._);
