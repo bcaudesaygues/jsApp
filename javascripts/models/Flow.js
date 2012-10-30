@@ -47,7 +47,7 @@ function Flow() {
             _.each(steps, function(step, index) {
                 step.flow = this;
             });
-            return steps
+            return steps;
         },
         set: function(stepsId) {
             this.steps = stepsId;
@@ -57,13 +57,3 @@ function Flow() {
 };
 Flow.prototype = new Model();
 Flow.prototype.constructor = "Flow";
-
-Flow.prototype.save = function() {
-    Console.log("Saving Flow and launching event");
-	window.store.save(this);
-};
-Flow.prototype.findByName = function(name) {
-	return window.store.find(this.constructor, function(item, index, val) {
-		return item.name == name;
-	})[0];
-};
