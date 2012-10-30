@@ -62,93 +62,27 @@ $(document).ready(function() {
 		return $.extend(obj, true, formObj);
 	};
 
-    // Object factory
-    var factory = function(modelType, arg) {
-        var obj = new modelType;
-        _.each(obj.__meta, function(propName, index) {
-            if (this[propName]) {
-            	if (obj["set_" + propName]) {
-            		obj["set_" + propName](this[propName]);
-            	} else {
-                	obj[propName] = this[propName];
-                }
-            } else {
-                obj[propName] = "";
-            }
-        }, arg);
-
-        obj.prototype = new modelType;
-        return obj;
-    };
-
     function Model() {};
     Model.prototype.save =  function() {
+        window.store.save(this);
     };
-    Model.prototype.findAll = function() {
-    	return Store.all(this.constructor);
+    Model.prototype.findAll = function(modelType) {
+        return window.store.all(modelType);
     };
     Model.prototype.update = function() {
     };
     Model.prototype.destroy = function() {
     };
     Model.prototype.find = function(param) {
-        Store.find(this.constructor, param);
+        window.store.find(this.constructor, param);
     };
-    Model.prototype.findByIds = function(id) {
-		return Store.find(this.constructor, function(item, index, val) {
-			return $.inArray(item.id, id);
-		});
+    Model.prototype.findByIds = function(modelType, ids) {
+		return window.store.findIds(modelType, ids);
 	};
-    Model.prototype.findById = function(id) {
-		return Store.find(this.constructor, function(item, index, val) {
-			return item.id == id;
-		})[0];
+    Model.prototype.findById = function(modelType, id) {
+		return window.store.find(modelType, id);
 	};
 	
-    var Store = {
-		object: [],
-		_store: {},
-		_ids: [],
-
-		load: function(modelType, collection) {
-			var modelName = modelType.prototype.constructor;
-			if (!this._store[modelName]) {
-				this._store[modelName] = [];
-			}
-			if (!this._ids[modelName]) {
-				this._ids[modelName] = -1;
-			}
-			var length = collection.length;
-            for (i = 0; i < length; i++) {
-            	var obj = factory(modelType, collection[i]);
-				this._store[modelName].push(obj);
-				if (obj.id > this._ids[modelName])
-					this._ids[modelName] = obj.id;
-            }
-		},
-		getNextId: function(modelType) {
-			this._ids[modelType.prototype.constructor] == this._ids[modelType.prototype.constructor]++;
-			return this._ids[modelType.prototype.constructor];
-		},
-		all: function(modelType) {
-			return this._store[modelType]
-		},
-		find: function(modelType, callback) {
-			var models = this._store[modelType];
-			return models.filter(callback);
-		},
-		save: function(obj) {
-			if (!obj.id) {
-				this._ids[obj.constructor] = this._ids[obj.constructor] +1;
-				var modelLastId = this._ids[obj.constructor];
-				modelLastId++;
-				obj.id = modelLastId;
-				this._store[obj.constructor].push(obj);
-			}
-			return JSON.stringify(obj);
-		}
-	};
-
 	/****************
 	*	Models
 	****************/
@@ -168,7 +102,7 @@ $(document).ready(function() {
 	    // Process getter/setter
 	    Object.defineGetterAndSetter(this, "process", {
 	    	get: function() {
-	    		return new Process().findById(this._processId);
+	    		return Model.prototype.findById(Process, this._processId);
     		},
     		set: function(processId) {
 	    		this._processId = processId;
@@ -178,7 +112,7 @@ $(document).ready(function() {
 	    // Company getter/setter
 	    Object.defineGetterAndSetter(this, "company", {
 	    	get: function() {
-		    	return new Company().findById(this._companyId);
+		    	return Model.prototype.findById(Company, this._companyId);
 		    },
 		    set: function(companyId) {
 		    	this._companyId = companyId;
@@ -188,7 +122,7 @@ $(document).ready(function() {
 	    // Owner getter/setter
 	    Object.defineGetterAndSetter(this, "owner", {
 	    	get: function() {
-		    	return new User().findById(this._ownerId);
+		    	return Model.prototype.findById(User, this._ownerId);
 		    },
 		    set: function(ownerId) {
 		    	this._ownerId = ownerId;
@@ -198,7 +132,7 @@ $(document).ready(function() {
 	    // Company getter/setter
 	    Object.defineGetterAndSetter(this, "steps", {
 	    	get: function() {
-		    	var steps = new Step().findByIds(this._stepsId);
+		    	var steps = Model.prototype.findByIds(Step, this._stepsId);
 		    	_.each(steps, function(step, index) {
 		    		step.flow = this;
 		    	});
@@ -215,11 +149,10 @@ $(document).ready(function() {
 
 	Flow.prototype.save = function() {
 		Console.log("Saving Flow and launching event");
-		Store.save(this);
-		$(document).triggerHandler("Flow.save", this);
+		window.store.save(this);
 	};
 	Flow.prototype.findByName = function(name) {
-		return Store.find(this.constructor, function(item, index, val) {
+		return window.store.find(this.constructor, function(item, index, val) {
 			return item.name == name;
 		})[0];
 	};
@@ -292,28 +225,29 @@ $(document).ready(function() {
 	****************/
 	var FlowController = {
 		list: function() {
-			flowListView.render(new Flow().findAll());
+            flowListView.render(Model.prototype.findAll(Flow));
 		},
 		show: function(id) {
-			var flow = new Flow().findById(id);
+			var flow = Model.prototype.findById(Flow, Flow,id);
 			flowDetailView.render(flow);
 		},
 		save: function(flow, callback) {
 			// Property merge
 			if (flow.id) {
-				var f = new Flow().findById(flow.id);
+				var f = Flow.findById(Flow, flow.id);
 				var flow = $.extend(f, true, flow);
 			// Not in the store
 			} else {
-				flow = factory(Flow, flow);
+				flow = window.store.factory(Flow, flow);
 			}
+            
 			flow.save();
 
 			if (callback)
 				callback();
 		},
 		addFlowForm: function() {
-			var flow = factory(Flow, {})
+			var flow = window.store.factory(Flow, {})
 			flowDetailView.render(flow);
 		}
 	};
@@ -374,7 +308,6 @@ $(document).ready(function() {
 		save: function(event) {
 			event.preventDefault();
 			var flow = bindFormToObj($("#app #flow-detail form"));
-			Console.log(flow);
 			FlowController.save(flow, flowDetailView.close);
 		},
 		bind: function() {
@@ -397,11 +330,11 @@ $(document).ready(function() {
 		}
 	}
 
-	Store.load(Flow, flows);
-	Store.load(Process, processes);
-	Store.load(Company, companies);
-	Store.load(User, users);
-	Store.load(Step, steps);
+	window.store.insert(Flow, flows);
+	window.store.insert(Process, processes);
+	window.store.insert(Company, companies);
+	window.store.insert(User, users);
+	window.store.insert(Step, steps);
 
 	FlowController.list();
 });

@@ -8,7 +8,7 @@ http.createServer(function(req, res) {
 
   // app
   } else if(req.url == "/javascripts/app.js") {
-    res.writeHead(200, {'Content-Type': 'text/javascript'});
+    res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(fs.readFileSync('javascripts/app.js'));
   // data
   } else if(req.url == "/data.js") {
@@ -38,6 +38,12 @@ http.createServer(function(req, res) {
   } else if(req.url == "/javascripts/underscore.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('javascripts/underscore.js'));
+  } else if(req.url == "/javascripts/tojson.js") {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end(fs.readFileSync('javascripts/tojson.js'));
+  } else if(req.url == "/javascripts/store.js") {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end(fs.readFileSync('javascripts/store.js'));
   // JQuery
   } else if(req.url == "/javascripts/jquery.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
@@ -55,4 +61,4 @@ http.createServer(function(req, res) {
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.end("Page Could Not Be Found");
   }
-}).listen("31606");
+}).listen(process.env.PORT);
