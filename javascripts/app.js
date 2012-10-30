@@ -88,75 +88,11 @@ $(document).ready(function() {
 	****************/
 
 	// --- Process
-	function Process() {
-		this.__meta = [
-			"id",
-			"name"
-		]
-	};
-	Process.prototype = new Model;
-	Process.prototype.constructor = "Process";
-
 	// --- Company
-	function Company() {
-		this.__meta = [
-			"id",
-			"value",
-			"name",
-			"code"
-		]
-	};
-	Company.prototype = new Model;
-	Company.prototype.constructor = "Company";
+
 
 	// --- User
-	function User() {
-		this.__meta = [
-			"id",
-			"name",
-			"isAccountActive"
-		]
-	}
-	User.prototype = new Model;
-	User.prototype.constructor = "User";
 
-	// --- Step
-	function Step() {
-		this.__meta = [
-			"id",
-			"label",
-			"details",
-			"validated",
-			"attachments",
-			"manager",
-			"endDate",
-			"tasks",
-			"isEditable",
-			"flow"
-		]
-
-		// manager getter/setter
-		Object.defineGetterAndSetter(this, "manager", {
-			get: function() {
-				return Model.prototype.findById(User, this.manager);
-			},
-			set: function(managerId) {
-				this.manager = managerId;
-			}
-		});
-
-		Object.defineGetterAndSetter(this, "tasks", {
-			get: function() {
-				return Model.prototype.findByIds(Task, this.tasks);
-			},
-			set: function(tasksId) {
-				this.tasks = tasksId;
-			}
-		});
-	}
-
-	Step.prototype = new Model;
-	Step.prototype.constructor = "Step";
 
 	function Task() {
 		this.__meta = [

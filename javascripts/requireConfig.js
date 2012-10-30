@@ -32,7 +32,7 @@ var req_config = require = {
             exports: '_'
         },
         Template: {
-            exports: 'mustache'
+            exports: 'Mustache'
         }
     }
 };
