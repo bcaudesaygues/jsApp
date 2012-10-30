@@ -18,3 +18,8 @@ Model.prototype.findByIds = function(modelType, ids) {
 Model.prototype.findById = function(modelType, id) {
 	return window.store.find(modelType, id);
 };
+
+Object.defineGetterAndSetter = function(obj, property, getterAndSetter) {
+	obj["get_"+property] = getterAndSetter.get;
+	obj["set_"+property] = getterAndSetter.set;
+}
