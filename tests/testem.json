@@ -1,0 +1,7 @@
+{
+    "framework": "jasmine",
+    "src_files": [
+        "tests/hello.js",
+        "tests/test.js"
+    ]
+}
