@@ -84,11 +84,7 @@
             if ("onstorage" in document) {
                 localStorage.setItem('_key', key);
             }
-            if (localStorage.getItem(key)) {
-                this._event = "update";
-            } else {
-                this._event = "create";   
-            }
+            this._event = "save";
             this._type = type;
             this._last_sent_key = key;
             localStorage.setItem(key, json);
@@ -107,11 +103,11 @@
                 //document.attachEvent("onstoragecommit", this.event);
             };
         },
-        event: function(e) {
+        storeEvent: function(e) {
             var key = localStorage.getItem("_key");
             if(key !== null && key !== "_key"){
                 var event = [window.store._type,window.store._event].join('.');
-                $(document).trigger(event, key);
+                $(document).triggerHandler(event, key);
             }
         }
     }

@@ -150,7 +150,6 @@ $(document).ready(function() {
 	Flow.prototype.save = function() {
 		Console.log("Saving Flow and launching event");
 		window.store.save(this);
-		$(document).triggerHandler("Flow.save", this);
 	};
 	Flow.prototype.findByName = function(name) {
 		return window.store.find(this.constructor, function(item, index, val) {
@@ -297,7 +296,7 @@ $(document).ready(function() {
 	var flowListView = {
 		render: function(flows) {
 			if (!flows) {
-				var flows = new Flow().findAll();
+				flows = Model.prototype.findAll(Flow);
 			}
 			if (!flows) {
 				return;
@@ -322,7 +321,7 @@ $(document).ready(function() {
 			});
 
 			// Save flow
-			$(document).on("Flow.save.flowlist", function(e) {
+			$(document).on("Flow.save", function(e) {
 				flowListView.destroy();
 				flowListView.render();
 			});
@@ -408,6 +407,14 @@ $(document).ready(function() {
 			$("#step-detail").html("");
 		}
 	};
+    
+    if (document.addEventListener) {
+        document.addEventListener("storage", event_storage, false);
+        document.addEventListener("storagecommit", event_storage, false);
+    } else {
+        document.attachEvent("onstorage", window.store.storeEvent);
+        document.attachEvent("onstoragecommit", window.store.storeEvent);
+    };
 
 	window.store.insert(Company, companies);
 	window.store.insert(Process, processes);
