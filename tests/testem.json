@@ -1,7 +1,9 @@
 {
     "framework": "jasmine",
     "src_files": [
-        "tests/hello.js",
-        "tests/test.js"
+        "hello.js"
+    ],
+    "test_files": [
+        "test.js"
     ]
 }
