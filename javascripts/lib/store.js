@@ -54,6 +54,9 @@
             var modelName = modelType.prototype.constructor;
             var collection = this._store[modelName];
             var elems = [];
+            if (!collection) {
+                return elems;
+            }
             for (var i = 0; i < collection.length; i++) {
                 var json = localStorage.getItem(collection[i]);
                 var obj = JSON.parse(json)
@@ -79,7 +82,7 @@
             var type = obj.constructor;
             var key = this._createKey(type, obj.id);
             
-            var json = $.toJSON(obj);
+            var json = JSON.stringify(obj);
             
             if ("onstorage" in document) {
                 localStorage.setItem('_key', key);
@@ -106,10 +109,13 @@
         storeEvent: function(e) {
             var key = localStorage.getItem("_key");
             if(key !== null && key !== "_key"){
-                var event = [window.store._type,window.store._event].join('.');
+                var event = [Store._type,Store._event].join('.');
+                console.log(event);
                 $(document).triggerHandler(event, key);
             }
         }
     }
-    window.store = Store;
+    
+    window.Store = Store;
+    return Store;
 })(window,window._);
