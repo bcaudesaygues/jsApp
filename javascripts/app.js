@@ -102,44 +102,44 @@ $(document).ready(function() {
 	    // Process getter/setter
 	    Object.defineGetterAndSetter(this, "process", {
 	    	get: function() {
-	    		return Model.prototype.findById(Process, this._processId);
+	    		return Model.prototype.findById(Process, this.process);
     		},
     		set: function(processId) {
-	    		this._processId = processId;
+	    		this.process = processId;
 	    	}
     	});
 	   
 	    // Company getter/setter
 	    Object.defineGetterAndSetter(this, "company", {
 	    	get: function() {
-		    	return Model.prototype.findById(Company, this._companyId);
+		    	return Model.prototype.findById(Company, this.company);
 		    },
 		    set: function(companyId) {
-		    	this._companyId = companyId;
+		    	this.company = companyId;
 		    }
 	    });
 
 	    // Owner getter/setter
 	    Object.defineGetterAndSetter(this, "owner", {
 	    	get: function() {
-		    	return Model.prototype.findById(User, this._ownerId);
+		    	return Model.prototype.findById(User, this.owner);
 		    },
 		    set: function(ownerId) {
-		    	this._ownerId = ownerId;
+		    	this.owner = ownerId;
 		    }
 	    });
 
 	    // Company getter/setter
 	    Object.defineGetterAndSetter(this, "steps", {
 	    	get: function() {
-		    	var steps = Model.prototype.findByIds(Step, this._stepsId);
+		    	var steps = Model.prototype.findByIds(Step, this.steps);
 		    	_.each(steps, function(step, index) {
 		    		step.flow = this;
 		    	});
 		    	return steps
 		    },
 		    set: function(stepsId) {
-		    	this._stepsId = stepsId;
+		    	this.steps = stepsId;
 		    }
 	    });
 	    
@@ -209,19 +209,19 @@ $(document).ready(function() {
 		// manager getter/setter
 		Object.defineGetterAndSetter(this, "manager", {
 			get: function() {
-				return Model.prototype.findById(User, this._managerId);
+				return Model.prototype.findById(User, this.manager);
 			},
 			set: function(managerId) {
-				this._managerId = managerId;
+				this.manager = managerId;
 			}
 		});
 
 		Object.defineGetterAndSetter(this, "tasks", {
 			get: function() {
-				return Model.prototype.findByIds(Task, this._tasksId);
+				return Model.prototype.findByIds(Task, this.tasks);
 			},
 			set: function(tasksId) {
-				this._tasksId = tasksId;
+				this.tasks = tasksId;
 			}
 		});
 	}
@@ -357,19 +357,46 @@ $(document).ready(function() {
 			this.unbind();
 
 			// Close popup
-			$("#app #flow-detail").on("click.Flow", ".close", flowDetailView.close);
+			$("#flow-detail").on("click.Flow", ".close", flowDetailView.close);
 
 			// Save change
-			$("#app #flow-detail").on("submit.Flow", "form", this.save);
+			$("#flow-detail").on("submit.Flow", "form", this.save);
 		},
 		unbind: function() {
-			$("#app #flow-detail").unbind("click.Flow");
-			$("#app #flow-detail").unbind("submit.Flow");
+			$("#flow-detail").unbind("click.Flow");
+			$("#flow-detail").unbind("submit.Flow");
 		},
 		close: function() {
 			$("#flow-detail").addClass("display-none");
 			flowDetailView.unbind();
-			$("#app #flow-detail").html("");
+			$("#flow-detail").html("");
+		}
+	};
+
+	var stepDetailView = {
+		render: function(step) {
+			if (!step) {
+				return;
+			}
+			var html = Mustache.render($("#step-detail-template").html(), {"step": step});
+			$("#step-detail").html(html);
+			this.bind();
+			$("#step-detail").removeClass("display-none");
+		},
+		bind: function() {
+			// Remove all previous event handler
+			this.unbind();
+
+			// Close popup
+			$("#step-detail").on("click.Step", ".close", stepDetailView.close);
+		},
+		unbind: function() {
+			$("#step-detail").unbind("click.Step");
+		},
+		close: function() {
+			$("#step-detail").addClass("display-none");
+			stepDetailView.unbind();
+			$("#step-detail").html("");
 		}
 	};
 
