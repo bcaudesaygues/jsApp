@@ -1,9 +1,8 @@
 framework: jasmine
-launch_in_dev: 
+launch_in_dev:
+- PhantomJS
+launch_in_ci:
 - PhantomJS
 - Firefox
-launch_in_ci:
-- Firefox
 - IE8
-- Chrome
-test_page: modelTest.html
+test_page: ModelTest.html
