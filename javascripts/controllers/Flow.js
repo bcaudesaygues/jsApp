@@ -1,52 +1,52 @@
-define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow"], function($, Store, Model, Flow, FlowView) {
-    
-    var FlowController = {
+define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow", "Router"], function($, Store, Model, Flow, FlowView, Router) {
+	
+	var FlowController = {
 		list: function() {
-            this.bind();
-            console.log("flow controller list");
-            var flowListView = FlowView.list;
-            flowListView.render(Model.prototype.findAll(Flow));
+			this.bind();
+			var flowListView = FlowView.list;
+			flowListView.render(Model.prototype.findAll(Flow));
 		},
 		show: function(id) {
 			var flow = Model.prototype.findById(Flow, id);
-            var flowDetailView = FlowView.show;
-			flowDetailView.render(flow);
+			FlowView.show.render(flow);
 		},
 		save: function(flowForm, callback) {
 			// Property merge
-            var flow;
+			var flow;
 			if (flowForm.id) {
 				flow = Model.prototype.findById(Flow, flowForm.id);
-                _.each(flowForm, function(value, property) {
-                    if (flow["set_" + property]) {
-                        flow["set_" + property](value);
-                    } else if (flow[property]) {
-                        flow[property] = value;
-                    }
-                });
+				_.each(flowForm, function(value, property) {
+					if (flow["set_" + property]) {
+						flow["set_" + property](value);
+					} else if (flow[property]) {
+						flow[property] = value;
+					}
+				});
 			// Not in the store
 			} else {
 				flow = Store.factory(Flow, flow);
 			}
-            
+			
 			flow.save();
-
+            
 			if (callback)
 				callback();
+                
+            Router.route("FlowController", "list");
 		},
 		addFlowForm: function() {
-			var flow = Store.factory(Flow, {})
-            var flowDetailView = FlowView.show;
+			var flow = Store.factory(Flow, {});
+			var flowDetailView = FlowView.show;
 			flowDetailView.render(flow);
 		},
-        bind: function() {
-            $(document).on("Flow.save.list", function() {
-                FlowController.list();
-            });
+        closeShow: function() {
+            FlowView.show.close();  
         },
-        unbind: function() {
-            $(document).unbind("Flow.save.list");
-        }
+		bind: function() {
+		},
+		unbind: function() {
+		}
 	};
-    window.FlowController = FlowController;
+    Router.controllers["FlowController"] = FlowController;
+	return FlowController;
 });
