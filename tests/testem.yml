@@ -1,10 +1,9 @@
 framework: jasmine
 launch_in_dev: 
 - PhantomJS
+- Firefox
 launch_in_ci:
 - Firefox
 - IE8
 - Chrome
-src_files:
-- hello.js
-- test.js
+test_page: modelTest.html
