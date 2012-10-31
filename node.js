@@ -38,11 +38,13 @@ http.createServer(function(req, res) {
   } else if(req.url == "/javascripts/underscore.js") {
     res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('javascripts/underscore.js'));
+  // toJson
   } else if(req.url == "/javascripts/tojson.js") {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('javascripts/tojson.js'));
+  // Store
   } else if(req.url == "/javascripts/store.js") {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.writeHead(200, {'Content-Type': 'text/javascript'});
     res.end(fs.readFileSync('javascripts/store.js'));
   // JQuery
   } else if(req.url == "/javascripts/jquery.js") {
