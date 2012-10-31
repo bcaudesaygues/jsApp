@@ -1,0 +1,10 @@
+framework: jasmine
+launch_in_dev: 
+- PhantomJS
+launch_in_ci:
+- Firefox
+- IE8
+- Chrome
+src_files:
+- hello.js
+- test.js
