@@ -1,6 +1,7 @@
 var serverUrl = window.location.protocol + "//" + window.location.host + "/";
 var require = {
 	enforceDefine: true,
+	baseUrl: "/javascripts",
 	waitSeconds: 15,
 	baseUrl: '/javascripts',
     deps: [serverUrl + "javascripts/lib/logger.js"],
@@ -16,6 +17,7 @@ var require = {
 			Json: "libs/json2",
 	        Router: "libs/router",
 			Model: 'libs/model',
+			LocalStorage: "lib/localStorage"
 		}
 	},
 	shim: {
@@ -26,7 +28,7 @@ var require = {
 			exports: 'JSON'
 		},
 		'libs/store': {
-			deps: ['jQuery','Underscore', 'Json'],
+			deps: ['jQuery','Underscore', 'Json', 'LocalStorage'],
 			exports: 'Store'
 		},
 		'libs/model': {

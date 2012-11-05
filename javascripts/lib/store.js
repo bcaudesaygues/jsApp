@@ -82,15 +82,13 @@
 			var type = obj.constructor;
 			var key = this._createKey(type, obj.id);
 			
-			var json = JSON.stringify(obj);
-			
 			if ("onstorage" in document) {
-				localStorage.setItem('_key', key);
+				localStorage.setKey('_key', key);
 			}
 			this._event = "save";
 			this._type = type;
 			this._last_sent_key = key;
-			localStorage.setItem(key, json);
+			localStorage.setKey(key, obj);
 			if(this._store[obj.constructor] === undefined) {
 				this._store[obj.constructor] = [];
 			}

@@ -8,6 +8,6 @@ define(["lib/model"], function(Model) {
 		];
 	}
 	Company.prototype = new Model();
-	Company.prototype.constructor = "Company";
+	Company.prototype.constructor = Company;
 	return Company;
 });

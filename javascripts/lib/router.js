@@ -1,6 +1,4 @@
 define([], function() {
-    
-    
     var Router = {
         controllers: [],
         route: function(controller, action) {
