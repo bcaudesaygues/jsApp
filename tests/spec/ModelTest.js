@@ -4,6 +4,29 @@ function(Store, Model){
 
 	window.describe('Test model', function(){
     	
+    	it('shall fail in IE8', function() {
+        	var human = function() {
+			    var _firstName = '';
+			    var _lastName = ''
+			    return {
+			        get firstName() {
+			            return _firstName;
+			        }, get lastName() {
+			            return _lastName;
+			        }, set firstName(name) {
+			            _firstName = name;
+			        }, set lastName(name) {
+			            _lastName = name;
+			        }, get fullName() {
+			            return _firstName + ' ' + _lastName;
+			        }
+			    }
+			}();
+			human.firstName = 'Saeed';
+			human.lastName = 'Neamati';
+			expect(human.fullName).toBe("Saeed Neamati");
+    	});
+
     	it('new model should inherit from model', function() {
         	function NewModel() {
 
@@ -12,7 +35,7 @@ function(Store, Model){
         	expect(typeof NewModel).toBe(typeof Model);
     	});
 
-    	it('shall retrieve parameters', function() {
+    	it('shall retrieve setted parameters', function() {
     		
     		// Arange
 			function Entity() {
@@ -32,7 +55,7 @@ function(Store, Model){
 			}
 
 			Entity.prototype = new Model();
-			Entity.prototype.constructor = "Entity";
+			Entity.prototype.constructor = Entity;
 			
 			var expectedId = "1234";
 			var ent = new Entity();
