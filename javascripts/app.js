@@ -12,14 +12,6 @@ define(['jQuery', 'Store', "Router", "models/Company","models/Process", "models/
     			var Step = require("models/Step");
     			var Flow = require("models/Flow");
     			
-    			
-    			if (document.addEventListener) {
-    				window.addEventListener("storage", Store.storeEvent, false);
-    				window.addEventListener("storagecommit", Store.storeEvent, false);
-    			} else {
-    				document.attachEvent("onstorage", Store.storeEvent);
-    				document.attachEvent("onstoragecommit", Store.storeEvent);
-    			};
     			$.ajaxSetup({async: false, cache: true});
     			$.getScript("/companies.js", function() { 
     				Store.insert(Company, companies);

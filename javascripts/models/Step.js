@@ -14,7 +14,9 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 			"endDate",
 			"tasks",
 			"isEditable",
-			"flow"
+			"flow",
+            "nbTask",
+            "status"
 		];
 	
 		// manager getter/setter

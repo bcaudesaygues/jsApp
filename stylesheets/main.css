@@ -28,13 +28,6 @@
 	padding: 10px;
 }
 
-.flow-step {
-	display: inline-block;
-	padding: 5px;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-}
-
 
 /* FORM */
 label {
@@ -59,4 +52,40 @@ input[type="text"]:focus, input[type="text"]:active {
 input[type="submit"] {
 	float: right;
 	margin-right: 10px;
+}
+
+
+/* STEP IN "TIMELINE" */
+.flow-step {
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    position: relative;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.flow-step .pin {
+    border: 1px solid black;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    background: #87cefa;
+}
+
+.flow-step.ALERT .pin {
+    background: red;
+}
+.flow-step.LATE .pin {
+    background: orange;
+}
+.flow-step.VALIDATED .pin {
+    background: green;
+}
+.flow-step.DONE .pin {
+    background: blue;
 }

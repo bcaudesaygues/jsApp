@@ -70,7 +70,9 @@
 		</dt>
 		<dd>
 			{{#get_steps}}
-				<div class="flow-step"><input type="hidden" name="id" value="{{id}}"/> {{label}}</div>
+				<div class="flow-step {{status}}"><input type="hidden" name="id" value="{{id}}"/>{{label}}
+                    <span class='pin'>{{{nbTask}}}</span>
+                </div>
 			{{/get_steps}}
 		</dd>
 	{{/flows}}
@@ -86,15 +88,73 @@
 	</div>
 	<div class="content">
 		{{#step}}
-			{{label}}
-			{{endDate}}
-			{{#get_tasks}}
-				<li>{{name}} - 
-					{{#get_actor}} 
-						{{name}} 
-					{{/get_actor}}
-					 - {{status}}</li>
-			{{/get_tasks}}
+            <div class="step">
+                <div class="edit display-none">
+                    <form>
+                        <input type="hidden" name="id" value="{{id}}" />
+                        <span class="label">
+                            <label>Label:</label>
+                            <input type="text" name="label" value="{{label}}" />
+                        </span>
+                        <span class="end-date">
+                            <label>due date:</label>
+                            <input type="text" name="endDate" value="{{endDate}}" />
+                        </span>
+                        <span class="owner">
+                            <label>Owner:</label>
+                            {{#get_owner}}
+                                <input type="text" name="owner" value="{{id}}" />
+                            {{/get_owner}}
+                        </span>
+                        <input type="submit" value="Save" />
+
+                    </form>
+                </div>
+                <div class="show">
+                    <button class="edit-mode">Edit</button>
+                    {{label}}
+                    {{endDate}}
+                </div>
+            </div>
+
+            <div class="tasks-list">
+                {{#get_tasks}}
+                    <li class="task">
+                        <div class="edit display-none">
+                            <form>
+                                <span class="name">
+                                    <label>Label:</label>
+                                    <input type="text" name="name" value="{{name}}"/>
+                                </span>
+                                <span class="actor">
+                                    <label>Actor:</label>
+                                    {{get_actor}}
+                                        <input tyhpe="text" name="actor" value="{{id}}" />
+                                        <span class="help-inline">{{name}</span>
+                                    {{/get_actor}}
+                                </span>
+                                <span class="status">
+                                    <select name="status">
+                                        <option value="NOT_STARTED" selected>NOT_STARTED</option>
+                                        <option value="DOING">DOING</option>
+                                        <option value="ALERT">ALERT</option>
+                                        <option value="DONE">DONE</option>
+                                    </select>
+                                </span>
+                                <input type="submit" value="Save" />
+                            </form>
+                        </div>
+                        <div class="show">
+                            <span class="name">{{name}}</span>
+                            {{#get_actor}}
+                                <span class="actor">{{name}}</span>
+                            {{/get_actor}}
+
+                            <span class="status">{{status}}</span>
+                        </div>
+                    </li>
+                {{/get_tasks}}
+            </div>
 		{{/step}}
 	</div>
 </div>

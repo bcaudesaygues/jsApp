@@ -1,17 +1,17 @@
 define(["Template", "Router", "lib/view", "controllers/Step"], function(Template, Router) {
 	
 	var flowListView = {
-		render: function(flows) {
-			if (!flows) {
+        render: function(flows) {
+    		if (!flows) {
 				return;
 			}
 			var html = Template.render($("#flow-list-template").html(), {"flows": flows});
 			$("#app #flow-list").html(html);
 	
-			this.bind();
+			flowListView.bind();
 		},
-		bind: function() {
-			// Display flow form
+        bind: function() {
+    		// Display flow form
 			$("#app").on("click.FlowList", "dt", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
@@ -25,18 +25,15 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 			});
 		
 			// Display step
-			
 			$("#app").on("click.showStep", "dd .flow-step", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
 				Router.route("StepController", "show", id);
 			});
-			
 		},
 		unbind: function() {
 			$("#app").unbind("click.FlowList");
 			$("#app").unbind("click.addFlow");
-			$(document).unbind("Flow.save.flowlist");
 			$("#app").unbind("click.showStep");
 		},
 		destroy: function() {

@@ -96,21 +96,28 @@
 			}
             if (!_.contains(this._store[obj.constructor], key))
 			    this._store[obj.constructor].push(key);
+                
+            this.sendEvent(key, "save");
 		},
 		bind: function() {
 			if (document.addEventListener) {
-				document.addEventListener("storage", event_storage, false);
-				document.addEventListener("storagecommit", event_storage, false);
+                $(document).on("onstorage", this.storeEvent);
+    			$(document).on("onstoragecommit", this.storeEvent);
 			} else {
-				$(document).on("onstorage", { name: "Karl" }, this.event);
-				$(document).on("onstoragecommit", { name: "Karl" }, this.event);
+				$(document).on("onstorage", this.storeEvent);
+				$(document).on("onstoragecommit", this.storeEvent);
 				//document.attachEvent("onstoragecommit", this.event);
 			}
 		},
+        sendEvent: function(key, eventType) {
+            var eventType = [Store._type, eventType].join(".");
+            $(document).triggerHandler(eventType, key);
+        },
 		storeEvent: function(e) {
 			var key = localStorage.getItem("_key");
 			if(key !== null && key !== "_key"){
 				var event = [Store._type,Store._event].join('.');
+                console.log(event);
 				$(document).triggerHandler(event, key);
 			}
 		}

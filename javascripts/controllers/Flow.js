@@ -2,7 +2,7 @@ define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow", "Router"], 
 	
 	var FlowController = {
 		list: function() {
-			this.bind();
+			FlowController.bind();
 			var flowListView = FlowView.list;
 			flowListView.render(Model.prototype.findAll(Flow));
 		},
@@ -43,8 +43,17 @@ define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow", "Router"], 
             FlowView.show.close();  
         },
 		bind: function() {
+            this.unbind();
+            
+            // Refresh list if: 
+            // Flow is updated
+            $(document).on("Flow.save.flowcontroller", FlowController.list);
+            // Step is updated
+            $(document).on("Step.save.flowcontroller", FlowController.list);
 		},
 		unbind: function() {
+            $(document).unbind("Flow.save.flowcontroller");
+            $(document).unbind("Step.save.flowcontroller");
 		}
 	};
     Router.controllers["FlowController"] = FlowController;
