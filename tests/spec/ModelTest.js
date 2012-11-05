@@ -3,6 +3,38 @@ define(
 function(Store, Model){
 
 	window.describe('Test model', function(){
+
+    	it('shall retrieve all saved objects', function() {
+    		
+    		// Arange
+			function Entity() {
+				this.__meta = [
+				"id",
+				];
+
+				// Process getter/setter
+				Object.defineGetterAndSetter(this, "id", {
+					set: function(id) {
+						this.id = id;
+					}
+				});
+			}
+
+			Entity.prototype = new Model();
+			Entity.prototype.constructor = Entity;
+
+			// Act
+			for(i=0; i<5; i++) {
+				var ent = new Entity();
+				ent.id = i;
+				ent.save();
+			}
+			
+			var retrievedEnts = Entity.prototype.findAll(Entity);
+
+			// Assert
+			expect(retrievedEnts.length).toBe(5);
+    	});
     	
 		it('shall calculate fibo in less than 1.2 s', function() {
 
@@ -39,9 +71,6 @@ function(Store, Model){
 			function Entity() {
 				this.__meta = [
 				"id",
-				"value",
-				"name",
-				"code"
 				];
 
 				// Process getter/setter
@@ -64,6 +93,39 @@ function(Store, Model){
 
 			// Assert
 			expect(entId).toBe(expectedId);
+    	});
+
+		it('shall retrieve saved objects by id', function() {
+    		
+    		// Arange
+			function Entity() {
+				this.__meta = [
+				"id",
+				];
+
+				// Process getter/setter
+				Object.defineGetterAndSetter(this, "id", {
+					set: function(id) {
+						this.id = id;
+					}
+				});
+			}
+
+			Entity.prototype = new Model();
+			Entity.prototype.constructor = Entity;
+			
+			var id = "1234";
+			var ent = new Entity();
+			ent.id = id;
+
+
+			// Act
+			ent.save();
+
+			var retrievedEnt = Entity.prototype.findById(Entity,id);
+
+			// Assert
+			expect(retrievedEnt).toBeDefined();
     	});
 
 	});
