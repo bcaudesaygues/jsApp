@@ -5,26 +5,30 @@ function(Store, Model){
 	window.describe('Test model', function(){
     	
     	it('shall fail in IE8', function() {
-        	var human = function() {
-			    var _firstName = '';
-			    var _lastName = ''
-			    return {
-			        get firstName() {
-			            return _firstName;
-			        }, get lastName() {
-			            return _lastName;
-			        }, set firstName(name) {
-			            _firstName = name;
-			        }, set lastName(name) {
-			            _lastName = name;
-			        }, get fullName() {
-			            return _firstName + ' ' + _lastName;
-			        }
-			    }
-			}();
-			human.firstName = 'Saeed';
-			human.lastName = 'Neamati';
-			expect(human.fullName).toBe("Saeed Neamati");
+    		try {
+	        	var human = function() {
+				    var _firstName = '';
+				    var _lastName = ''
+				    return {
+				        get firstName() {
+				            return _firstName;
+				        }, get lastName() {
+				            return _lastName;
+				        }, set firstName(name) {
+				            _firstName = name;
+				        }, set lastName(name) {
+				            _lastName = name;
+				        }, get fullName() {
+				            return _firstName + ' ' + _lastName;
+				        }
+				    }
+				}();
+				human.firstName = 'Saeed';
+				human.lastName = 'Neamati';
+				expect(human.fullName).toBe("Saeed Neamati");
+			} catch(err) {
+				expect(true).toBe(false);
+			}
     	});
 
     	it('new model should inherit from model', function() {
