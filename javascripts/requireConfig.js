@@ -1,48 +1,45 @@
+var serverUrl = window.location.protocol + "//" + window.location.host + "/";
 var require = {
 	enforceDefine: true,
-	baseUrl: "/javascripts",
 	waitSeconds: 15,
-
-    deps: ["lib/logger"],
+	baseUrl: '/javascripts',
+    deps: [serverUrl + "javascripts/lib/logger.js"],
 	paths: {
-		jQuery: 'lib/jQuery/jquery-1.7.2',
-		/*
-		jQueryUi: 'lib/jQuery/ui/jqueryUI',
-		jQueryDatepicker: 'lib/jQuery/ui/jquery-ui-1.8.19.custom.min',
-		jQuerySexyAutocomplete: 'lib/jQuery/plugins/jquery-sexyAutocomplete',
-		*/
-		Underscore: 'lib/underscore',
-		Store: 'lib/store',
-		Template: 'lib/mustache',
-		Json: "lib/json2",
-        Router: "lib/router",
+		libs: serverUrl + "javascripts/lib/"
+	},
+	map: {
+		"*": {
+			jQuery: 'libs/jQuery/jquery-1.7.2',
+			Underscore: 'libs/underscore',
+			Store: 'libs/store',
+			Template: 'libs/mustache',
+			Json: "libs/json2",
+	        Router: "libs/router",
+			Model: 'libs/model',
+		}
 	},
 	shim: {
-		jQuery: {
+		'libs/jQuery/jquery-1.7.2': {
 			exports: '$'
 		},
-		/*
-		jQueryDatepicker: {
-			deps: ['jQuery']
-		},
-		jQuerySexyAutocomplete: {
-			deps: ['jQuery','jQueryDatepicker']
-		},
-		*/
-		Json: {
+		'libs/json2': {
 			exports: 'JSON'
 		},
-		Store: {
+		'libs/store': {
 			deps: ['jQuery','Underscore', 'Json'],
 			exports: 'Store'
 		},
-		Underscore: {
+		'libs/model': {
+            deps: ['Store'],
+            exports: 'Model'
+        },
+		'libs/underscore': {
 			exports: '_'
 		},
-		Template: {
+		'libs/mustache': {
 			exports: 'Mustache'
 		},
-        Router: {
+        'libs/routeur': {
             exports: 'Router'
         }
 	}
