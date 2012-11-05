@@ -4,31 +4,25 @@ function(Store, Model){
 
 	window.describe('Test model', function(){
     	
-    	it('shall fail in IE8', function() {
-    		try {
-	        	var human = function() {
-				    var _firstName = '';
-				    var _lastName = ''
-				    return {
-				        get firstName() {
-				            return _firstName;
-				        }, get lastName() {
-				            return _lastName;
-				        }, set firstName(name) {
-				            _firstName = name;
-				        }, set lastName(name) {
-				            _lastName = name;
-				        }, get fullName() {
-				            return _firstName + ' ' + _lastName;
-				        }
-				    }
-				}();
-				human.firstName = 'Saeed';
-				human.lastName = 'Neamati';
-				expect(human.fullName).toBe("Saeed Neamati");
-			} catch(err) {
-				expect(true).toBe(false);
+		it('shall calculate fibo in less than 1.2 s', function() {
+
+			var start = +new Date();  // log start timestamp
+
+    		var first,second,add;
+			for(var i=0;i<7500;i++){
+			    if(i === 0){
+			        first = 1;
+			        second = 2;
+			    }
+			    add = first + second;
+			    first = second;
+			    second = add;
 			}
+
+			var end = +new Date();  // log end timestamp
+			var duration = end - start;
+
+			expect(duration).toBeLessThan(1.2);
     	});
 
     	it('new model should inherit from model', function() {
