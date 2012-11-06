@@ -1,5 +1,5 @@
-define(['jQuery', 'Store', "Router", "Moment", "models/Company","models/Process", "models/User", "models/Task", "models/Step", "models/Flow", "controllers/Flow"], 
-function ($, Store, Router, moment) {
+define(['jQuery', 'Store', "Router", "Moment", "controllers/Flow", "models/Company","models/Process", "models/User", "models/Task", "models/Step", "models/Flow"], 
+function ($, Store, Router, moment, FlowController) {
     $(document).ready(function() {
         moment.lang('fr');
     	var App = {
@@ -39,7 +39,7 @@ function ($, Store, Router, moment) {
     			Console.log("intializing app");
     			this.init();
     			Console.log("launching app");
-    			this.router.route("FlowController", "list");
+                Router.start(FlowController.list, true);
     		}
     	};
         

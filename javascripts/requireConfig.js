@@ -19,7 +19,8 @@ var require = {
 			Model: 'libs/model',
             Moment: 'libs/moment/init-moment',
             srcMoment: 'libs/moment/moment', 
-            momentlang: 'libs/moment/lang-all.min'
+            momentlang: 'libs/moment/lang-all.min',
+            Path: 'lib/path'
 		}
 	},
 	shim: {
@@ -43,8 +44,12 @@ var require = {
 		'libs/mustache': {
 			exports: 'Mustache'
 		},
-        'libs/routeur': {
+        'libs/router': {
+            deps: ['Path'],
             exports: 'Router'
+        },
+        'lib/path': {
+            exports: 'Path'
         },
         'libs/moment/init-moment': {
             deps: ['libs/moment/moment', 'libs/moment/lang-all.min'],

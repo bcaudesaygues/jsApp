@@ -51,7 +51,7 @@ define(["Template", "Router"], function(Template, Router) {
         saveStep: function(e) {
             e.preventDefault();
             var step = bindFormToObj($(this));
-            Router.route("StepController", "save", step);
+            Router.controllers.StepController.save(step);
         },
         taskEditMode: function(e) {
             $(this).find(".edit").removeClass("display-none");
@@ -65,13 +65,13 @@ define(["Template", "Router"], function(Template, Router) {
             Console.log("Submit task form");
             event.preventDefault();
             var task = bindFormToObj($(this));
-            //Router.route("stepController","saveTask", task);
             stepDetailView.taskShowMode($(this).parents(".task"));
         },
     	close: function() {
     		$("#step-detail").addClass("display-none");
     		stepDetailView.unbind();
     		$("#step-detail").html("");
+            Router.root();
     	}
     };
     var stepCreateView = {

@@ -1,5 +1,5 @@
-define(["Template", "Router", "lib/view", "controllers/Step"], function(Template, Router) {
-	
+define(["Template", "Router", "controllers/Step", "lib/view"], function(Template, Router) {
+
 	var flowListView = {
         render: function(flows) {
     		if (!flows) {
@@ -15,20 +15,20 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 			$("#flow-list").on("click.FlowList", "dt .edit", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
-			    Router.route("FlowController", "show", id);
+			    Router.controllers.FlowController.show(id);
 			});
 	
 			// Display new flow form
 			$("#flow-list").on("click.addFlow", "a.add-flow", function(e) {
 				e.preventDefault();
-				Router.route("FlowController","addFlowForm");
+				Router.controllers.FlowController.addFlowForm();
 			});
 		
 			// Display step
 			$("#flow-list").on("click.showStep", "dd .flow-step", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
-				Router.route("StepController", "show", id);
+				Router.controllers.StepController.show(id);
 			});
             
             $("#flow-list").on("click.addStep", "dt .add-step", function(e) {
@@ -62,7 +62,7 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 		save: function(event) {
 			event.preventDefault();
 			var flow = bindFormToObj($("#flow-detail form"));
-			Router.route("FlowController","save", flow);
+			Router.controllers.FlowController.save(flow);
             flowDetailView.close();
 		},
 		bind: function() {
@@ -83,6 +83,7 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 			$("#flow-detail").addClass("display-none");
 			flowDetailView.unbind();
 			$("#flow-detail").html("");
+            Router.root();
 		}
 	};
     
