@@ -6,8 +6,8 @@ define(["Template", "Router"], function(Template, Router) {
     		}
     		var html = Template.render($("#step-detail-template").html(), {"step": step});
     		$("#step-detail").html(html);
-    		this.bind();
     		$("#step-detail").removeClass("display-none");
+    		this.bind();
     	},
     	bind: function() {
     		// Remove all previous event handler
@@ -74,5 +74,39 @@ define(["Template", "Router"], function(Template, Router) {
     		$("#step-detail").html("");
     	}
     };
-    return { "show" : stepDetailView };
+    var stepCreateView = {
+        render: function(step, flowId) {
+            if (!step) {
+        		return;
+    		}
+            var data = {"step": step, "flow": flowId};
+            var template = $("#step-create-template").html();
+    		var html = Template.render(template, data);
+    		$("#step-create").html(html);
+    		$("#step-create").removeClass("display-none");
+    		this.bind();
+        },
+        bind: function() {
+            $("#step-create").on("submit.createStep", function(e) {
+                e.preventDefault();
+                var step = bindFormToObj($(this));
+                Router.route("StepController", "save", step, stepCreateView.close);
+            });
+            
+            $("#step-create").on("click.close", ".close", function(e) {
+                e.preventDefault();
+                stepCreateView.close();
+            });
+        },
+        unbind: function() {
+            $("#step-create").unbind("submit.createStep");
+        },
+        close: function() {
+            $("#step-create").addClass("display-none");
+        	stepDetailView.unbind();
+    		$("#step-create").html("");
+        }
+    };
+    
+    return { "show" : stepDetailView, "create": stepCreateView};
 });

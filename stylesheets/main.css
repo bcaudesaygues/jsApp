@@ -2,6 +2,7 @@
 	display: none;
 }
 
+/* MODAL */
 .modal {
 	top: 20px;
 	left: 100px;
@@ -88,4 +89,48 @@ input[type="submit"] {
 }
 .flow-step.DONE .pin {
     background: blue;
+}
+
+.flow-info {
+    float: left;
+    margin-right: 20px;
+}
+
+/* CORE */
+.btn, .btn:active, .btn:visited {
+    border: 1px solid gray;
+    background: lightGray;
+    text-decoration: none;
+    color: black;
+    padding: 3px 5px 2px 5px;
+    font-size: 80%;
+    display: inline-block;
+}
+
+.btn:hover {
+    cursor: pointer;   
+}
+
+dl, dt, dd, ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul, ol, li {
+    list-style-type: none;
+}
+
+/* Main list */
+.flow-list {
+    margin-top: 5px;
+}
+
+.flow-list dt {
+    background: lightBlue;
+    padding: 10px 5px;
+    border: 1px solid black;
+}
+
+.flow-list dd {
+    margin: 10px;
 }

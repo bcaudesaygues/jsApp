@@ -1,5 +1,7 @@
-define(['jQuery', 'Store', "Router", "models/Company","models/Process", "models/User", "models/Task", "models/Step", "models/Flow", "controllers/Flow"], function ($, Store, Router) {
+define(['jQuery', 'Store', "Router", "Moment", "models/Company","models/Process", "models/User", "models/Task", "models/Step", "models/Flow", "controllers/Flow"], 
+function ($, Store, Router, moment) {
     $(document).ready(function() {
+        moment.lang('fr');
     	var App = {
     		conf: {
     			mode: "dev"

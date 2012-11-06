@@ -1,4 +1,4 @@
-define(["Router", "lib/model", "models/Step", "views/Step"], function(Router, Model, Step, StepView) {
+define(["Router", "lib/model", "models/Step", "models/Flow", "views/Step"], function(Router, Model, Step, Flow, StepView) {
     var StepController = {
         show: function(id) {
     		var step = Step.prototype.findById(id);
@@ -18,15 +18,24 @@ define(["Router", "lib/model", "models/Step", "views/Step"], function(Router, Mo
                 });
                 // Not in the store
             } else {
-                step = Store.factory(Step, step);
+                step = Store.factory(Step.prototype, stepForm);
             }
 
             step.save();
+            
+            if (!stepForm.id) {
+                var flow = Flow.prototype.findById(stepForm.flow);
+                flow.addStep(step);
+            }
 
             if (callback)
                 callback();
 
             Router.route("StepController", "show", step.id);
+        },
+        add: function(flowId) {
+            var step = Store.factory(Step.prototype, {});
+            StepView.create.render(step, flowId);
         }
     };
     

@@ -1,9 +1,7 @@
 define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User) {
-	/*
-	var Task = require("Task");
-	var User = require("User");
-	*/
+    // --- Step model ---
 	function Step() {
+        // --- ATTRIBUTES ---
 		this.__meta = [
 			"id",
 			"label",
@@ -18,8 +16,8 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
             "nbTask",
             "status"
 		];
-	
-		// manager getter/setter
+    
+		// manager
 		Object.defineGetterAndSetter(this, "manager", {
 			get: function() {
 				return User.prototype.findById(this.manager);
@@ -29,6 +27,7 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 			}
 		});
 	
+        // tasks
 		Object.defineGetterAndSetter(this, "tasks", {
 			get: function() {
 				return Task.prototype.findByIds(this.tasks);
@@ -41,5 +40,8 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 	
 	Step.prototype = new Model();
 	Step.prototype.constructor = Step;
+    
+    // --- METHODS ---
+    
 	return Step;
 });

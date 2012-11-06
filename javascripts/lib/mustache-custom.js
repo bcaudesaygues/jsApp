@@ -26,10 +26,11 @@ define(["TemplateEngine", "Model"], function(Mustache, Model) {
                         }
                     } else {
                         if (context.view !== null) {
-                            if (context.view["get_" + name])   
+                            if (context.view["get_" + name] !== undefined) {
                                 value = context.view["get_" + name]();
-                            else
+                            } else {
                                 value = context.view[name];
+                            }
                         }
                     }
                     

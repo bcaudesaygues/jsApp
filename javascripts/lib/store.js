@@ -80,8 +80,12 @@
 		},
 		save: function(obj) {
 			var type = obj.getTypeName();
+            
+            if (!obj.id)
+                obj.id = this.getNextId(type);
+                
 			var key = this._createKey(type, obj.id);
-			
+            
 			this.setKey(key, obj);
 			if(this._store[type] === undefined) {
 				this._store[type] = [];

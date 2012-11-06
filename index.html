@@ -10,7 +10,11 @@
 			<div id="flow-list"></div>
 			<div id="flow-detail" class="modal flow-detail-view display-none"></div>
 			<div id="step-detail" class="modal step-detail-view display-none"></div>
+            <div id="step-create" class="modal step-detail-view display-none"></div>
 		</div>
+        
+        <div id="console" class="console">
+        </div>
 	</body>
 
 	<!-- APP -->
@@ -18,55 +22,75 @@
 	<script data-main="app" src="/javascripts/lib/require.js"></script>
 </html>
 
+<!-- FLOW FORM -->
 <div id="flow-detail-template" class="display-none">
-	{{#flow}}
-		<div class='title'>Flow {{label}} detail <a class='close'>X</a></div>
-		<div class='content'>
-		<form>
-			<input type='hidden' name='id' value='{{id}}'>
-			<br/>
-			<label>Name:</label><input type='text' name='label' value="{{label}}">
-			<br/>
-			{{#get_company}}
-				<label>Company:</label><input type='text' name='company' value='{{id}}'>
+	<div class='title'>
+        Flow detail 
+        <a class='close'>X</a>
+	</div>
+	<div class='content'>
+    	<form>
+    		<input type='hidden' name='id' value='{{flow.id}}'>
+    		
+            <div class="input">
+        		<label>Name:</label>
+                <input type='text' name='label' value='{{flow.label}}'>
+    		</div>
+            
+            <div class="input">
+        		<label>Company:</label>
+                <input type='text' name='company' value='{{flow.company.id}}'>
                 <span class="help-inline">
-                    {{name}}
+                    {{flow.company.name}}
                 </span>
-				<br/>
-			{{/get_company}}
-
-			{{#get_process}}
-				<label>Process:</label><input type='text' name='process' value='{{id}}'>
+    		</div>
+    
+            <div class="input">
+        		<label>Process:</label>
+                <input type='text' name='process' value='{{flow.process.id}}'>
                 <span class="help-inline">
-                    {{name}}
+                    {{flow.process.name}}
                 </span>
-				<br/>
-			{{/get_process}}
-
-			{{#get_owner}}
-				<label>Owner:</label><input type='text' name='owner' value='{{id}}'>
+    		</div>
+    
+            <div class="input">
+        		<label>Owner:</label>
+                <input type='text' name='owner' value='{{flow.owner.id}}'>
                 <span class="help-inline">
-                    {{name}}
+                    {{flow.owner.name}}
                 </span>
-				<br/>
-			{{/get_owner}}
-
-			<label>startDate:</label><input type='text' name='startDate' value='{{startDate}}'>
-			<br/>
-			<label>endDate:</label><input type='text' name='endDate' value='{{endDate}}'>
-			<br/>
-			<input type='submit' value='Enregistrer'/>
-		</form>
-		</div>
-	{{/flow}}
+    		</div>
+    
+            <div class="input">
+    		    <label>startDate:</label>
+                <input type='text' name='startDate' value='{{flow.startDate}}'>
+    		</div>
+            
+            <div class="input">
+    		    <label>endDate:</label>
+                <input type='text' name='endDate' value='{{flow.endDate}}'>
+    		</div>
+            
+    		<input type='submit' value='Enregistrer'/>
+    	</form>
+	</div>
 </div>
 
+<!-- FLOW LIST -->
 <div id="flow-list-template" class="display-none">
-	<a href='' class='add-flow'>Add flow</a><ul>
+	<a href='' class='add-flow btn'>Add flow</a>
+    <dl class="flow-list">
 	{{#flows}}
 		<dt>
-			<input type="hidden" name="id" value="{{id}}" />
-			{{label}} - {{process.name}} | {{steps.length}}
+            <div class="flow-info">
+    			<input type="hidden" name="id" value="{{id}}" />
+    			{{label}} - {{process.name}} | {{steps.length}}
+            </div>
+
+            <div class="action">
+                <a class="edit btn">Edit</a>
+                <a class="add-step btn">Add step</a>
+            </div>
 		</dt>
 		<dd>
 			{{#steps}}
@@ -76,8 +100,10 @@
 			{{/steps}}
 		</dd>
 	{{/flows}}
+    </dl>
 </div>
 
+<!-- STEP DETAIL -->
 <div id="step-detail-template" class="display-none">
 	<div class="title">
 		{{step.label}}
@@ -147,4 +173,39 @@
             {{/step.tasks}}
         </div>
 	</div>
+</div>
+
+<!-- NEW STEP FORM -->
+<div id="step-create-template" class="display-none">
+    <div class="title">
+		Create step
+		<a class="close">X</a>
+	</div>
+	<div class="content">
+        <form>
+            <input type="hidden" name="flow" value="{{flow}}" />
+        
+            <div class="input">
+                <label>Name</label>
+                <input type="text" name="label" value="{{step.label}}" />
+            </div>
+            
+            <div class="input">
+                <label>EndDate</label>
+                <input type="text" name="endDate" value="{{step.endDate}}" />
+            </div>
+            
+            <div class="input">
+                <label>manager</label>
+                <input type="text" name="manager" value="{{step.manager.id}}" />
+            </div>
+            
+            <div class="input">
+                <label>Textarea</label>
+                <textarea name="details">{{step.details}}</textarea>
+            </div>
+            
+            <input type="submit" value="save" />
+        </form>
+    </div>
 </div>

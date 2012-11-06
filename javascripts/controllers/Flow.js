@@ -3,8 +3,7 @@ define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow
 	var FlowController = {
 		list: function() {
 			FlowController.bind();
-			var flowListView = FlowView.list;
-			flowListView.render(Flow.prototype.findAll());
+			FlowView.list.render(Flow.prototype.findAll());
 		},
 		show: function(id) {
 			var flow = Flow.prototype.findById(id);
@@ -24,9 +23,8 @@ define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow
 				});
 			// Not in the store
 			} else {
-				flow = Store.factory(Flow, flow);
+				flow = Store.factory(Flow.prototype, flowForm);
 			}
-			
 			flow.save();
 
 			if (callback)
@@ -36,8 +34,7 @@ define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow
 		},
 		addFlowForm: function() {
 			var flow = Store.factory(Flow, {});
-			var flowDetailView = FlowView.show;
-			flowDetailView.render(flow);
+			FlowView.show.render(flow);
 		},
         closeShow: function() {
             FlowView.show.close();  
@@ -56,6 +53,7 @@ define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow
             $(document).unbind("Step.save.flowcontroller");
 		}
 	};
+    
     Router.controllers["FlowController"] = FlowController;
 	return FlowController;
 });

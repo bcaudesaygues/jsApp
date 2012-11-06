@@ -6,35 +6,42 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 				return;
 			}
 			var html = Template.render($("#flow-list-template").html(), {"flows": flows});
-			$("#app #flow-list").html(html);
+			$("#flow-list").html(html);
 	
 			flowListView.bind();
 		},
         bind: function() {
     		// Display flow form
-			$("#app").on("click.FlowList", "dt", function(e) {
+			$("#flow-list").on("click.FlowList", "dt .edit", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
 			    Router.route("FlowController", "show", id);
 			});
 	
 			// Display new flow form
-			$("#app").on("click.addFlow", "a.add-flow", function(e) {
+			$("#flow-list").on("click.addFlow", "a.add-flow", function(e) {
 				e.preventDefault();
 				Router.route("FlowController","addFlowForm");
 			});
 		
 			// Display step
-			$("#app").on("click.showStep", "dd .flow-step", function(e) {
+			$("#flow-list").on("click.showStep", "dd .flow-step", function(e) {
 				e.preventDefault();
 				var id = $(this).find("input[name='id']").val();
 				Router.route("StepController", "show", id);
 			});
+            
+            $("#flow-list").on("click.addStep", "dt .add-step", function(e) {
+                e.preventDefault();
+                var flowId = $(this).parents("dt").find("input[name='id']").val();
+                Router.route("StepController", "add", flowId);
+            });
 		},
 		unbind: function() {
-			$("#app").unbind("click.FlowList");
-			$("#app").unbind("click.addFlow");
-			$("#app").unbind("click.showStep");
+			$("#flow-list").unbind("click.FlowList");
+			$("#flow-list").unbind("click.addFlow");
+			$("#flow-list").unbind("click.showStep");
+            $("#flow-list").unbind("click.addStep");
 		},
 		destroy: function() {
 			this.unbind();
@@ -46,7 +53,8 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 			if (!flow) {
 				return;
 			}
-			var html = Template.render($("#flow-detail-template").html(), {"flow": flow});
+            var template = $("#flow-detail-template").html();
+			var html = Template.render(template, {"flow": flow});
 			$("#flow-detail").html(html);
 			this.bind();
 			$("#flow-detail").removeClass("display-none");
@@ -77,7 +85,7 @@ define(["Template", "Router", "lib/view", "controllers/Step"], function(Template
 			$("#flow-detail").html("");
 		}
 	};
-	
+    
 	return {
 		"list": flowListView,
 		"show": flowDetailView

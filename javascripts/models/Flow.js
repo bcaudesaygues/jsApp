@@ -1,5 +1,7 @@
-define(['Underscore', "lib/model", "models/Process", "models/Company", "models/User", "models/Step"] , function(_, Model, Process, Company, User, Step) {
+define(['Underscore', 'Moment', "Model", "models/Process", "models/Company", "models/User", "models/Step"] , function(_, moment, Model, Process, Company, User, Step) {
+    // --- Flow model ---
 	function Flow() {
+        // --- ATTBIBUTES ---
 		this.__meta = [
 			"id",
 			"label",
@@ -11,6 +13,10 @@ define(['Underscore', "lib/model", "models/Process", "models/Company", "models/U
 			"steps"
 		];
 	
+        // --- Getter / Setter ---
+        Object.defineDateProperty(this, "startDate");
+        Object.defineDateProperty(this, "endDate");
+    
 		// Process getter/setter
 		Object.defineGetterAndSetter(this, "process", {
 			get: function() {
@@ -51,7 +57,7 @@ define(['Underscore', "lib/model", "models/Process", "models/Company", "models/U
 				return steps;
 			},
 			set: function(stepsId) {
-				this.steps = stepsId;
+				this.steps = _.uniq(stepsId);
 			}
 		});
 		
@@ -59,6 +65,14 @@ define(['Underscore', "lib/model", "models/Process", "models/Company", "models/U
 	
 	Flow.prototype = new Model();
 	Flow.prototype.constructor = Flow;
+    
+    // --- METHODS ---
+    
+    Flow.prototype.addStep = function(step) {
+        this.steps.push(parseInt(step.id));
+        this.steps = _.uniq(this.steps);
+        this.save();
+    }
 	
 	return Flow;
 });

@@ -1,4 +1,4 @@
-define(["Store"], function(Store) {
+define(["Store", "Moment"], function(Store, moment) {
 	function Model() {};
 	Model.prototype.save =  function() {
 		Store.save(this);
@@ -33,5 +33,15 @@ define(["Store"], function(Store) {
 		obj["get_"+property] = getterAndSetter.get;
 		obj["set_"+property] = getterAndSetter.set;
 	};
+    Object.defineDateProperty = function(obj, property) {
+        Object.defineGetterAndSetter(obj, property, {
+            get: function() {
+                return moment(obj[property]).format("L");
+            },
+            set: function(value) {
+                obj[property] = value;
+            }
+        });
+    }
 	return Model;
 });
