@@ -7,7 +7,7 @@ define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow
 			flowListView.render(Flow.prototype.findAll());
 		},
 		show: function(id) {
-			var flow = Flow.findById(id);
+			var flow = Flow.prototype.findById(id);
 			FlowView.show.render(flow);
 		},
 		save: function(flowForm, callback) {
