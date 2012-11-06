@@ -66,95 +66,85 @@
 	{{#flows}}
 		<dt>
 			<input type="hidden" name="id" value="{{id}}" />
-			{{label}} - {{#get_process}} {{name}} {{/get_process}} | {{steps.length}}
+			{{label}} - {{process.name}} | {{steps.length}}
 		</dt>
 		<dd>
-			{{#get_steps}}
+			{{#steps}}
 				<div class="flow-step {{status}}"><input type="hidden" name="id" value="{{id}}"/>{{label}}
                     <span class='pin'>{{{nbTask}}}</span>
                 </div>
-			{{/get_steps}}
+			{{/steps}}
 		</dd>
 	{{/flows}}
 </div>
 
 <div id="step-detail-template" class="display-none">
 	<div class="title">
-		{{#step}}
-			{{label}}
-		{{/step}}
+		{{step.label}}
 
 		<a class="close">X</a>
 	</div>
 	<div class="content">
-		{{#step}}
-            <div class="step">
-                <div class="edit display-none">
-                    <form>
-                        <input type="hidden" name="id" value="{{id}}" />
-                        <span class="label">
-                            <label>Label:</label>
-                            <input type="text" name="label" value="{{label}}" />
-                        </span>
-                        <span class="end-date">
-                            <label>due date:</label>
-                            <input type="text" name="endDate" value="{{endDate}}" />
-                        </span>
-                        <span class="owner">
-                            <label>Owner:</label>
-                            {{#get_owner}}
-                                <input type="text" name="owner" value="{{id}}" />
-                            {{/get_owner}}
-                        </span>
-                        <input type="submit" value="Save" />
+        <div class="step">
+            <div class="edit display-none">
+                <form>
+                    <input type="hidden" name="id" value="{{step.id}}" />
+                    <span class="label">
+                        <label>Label:</label>
+                        <input type="text" name="label" value="{{step.label}}" />
+                    </span>
+                    <span class="end-date">
+                        <label>due date:</label>
+                        <input type="text" name="endDate" value="{{step.endDate}}" />
+                    </span>
+                    <span class="owner">
+                        <label>Owner:</label>
+                        <input type="text" name="owner" value="{{step.owner.id}}" />
+                        {{step.owner.name}}
+                    </span>
+                    <input type="submit" value="Save" />
 
-                    </form>
-                </div>
-                <div class="show">
-                    <button class="edit-mode">Edit</button>
-                    {{label}}
-                    {{endDate}}
-                </div>
+                </form>
             </div>
-
-            <div class="tasks-list">
-                {{#get_tasks}}
-                    <li class="task">
-                        <div class="edit display-none">
-                            <form>
-                                <span class="name">
-                                    <label>Label:</label>
-                                    <input type="text" name="name" value="{{name}}"/>
-                                </span>
-                                <span class="actor">
-                                    <label>Actor:</label>
-                                    {{get_actor}}
-                                        <input tyhpe="text" name="actor" value="{{id}}" />
-                                        <span class="help-inline">{{name}</span>
-                                    {{/get_actor}}
-                                </span>
-                                <span class="status">
-                                    <select name="status">
-                                        <option value="NOT_STARTED" selected>NOT_STARTED</option>
-                                        <option value="DOING">DOING</option>
-                                        <option value="ALERT">ALERT</option>
-                                        <option value="DONE">DONE</option>
-                                    </select>
-                                </span>
-                                <input type="submit" value="Save" />
-                            </form>
-                        </div>
-                        <div class="show">
-                            <span class="name">{{name}}</span>
-                            {{#get_actor}}
-                                <span class="actor">{{name}}</span>
-                            {{/get_actor}}
-
-                            <span class="status">{{status}}</span>
-                        </div>
-                    </li>
-                {{/get_tasks}}
+            <div class="show">
+                <button class="edit-mode">Edit</button>
+                {{step.label}}
+                {{step.endDate}}
             </div>
-		{{/step}}
+        </div>
+
+        <div class="tasks-list">
+            {{#step.tasks}}
+                <li class="task">
+                    <div class="edit display-none">
+                        <form>
+                            <span class="name">
+                                <label>Label:</label>
+                                <input type="text" name="name" value="{{name}}"/>
+                            </span>
+                            <span class="actor">
+                                <label>Actor:</label>
+                                <input tyhpe="text" name="actor" value="{{actor.id}}" />
+                                <span class="help-inline">{{actor.name}</span>
+                            </span>
+                            <span class="status">
+                                <select name="status">
+                                    <option value="NOT_STARTED" selected>NOT_STARTED</option>
+                                    <option value="DOING">DOING</option>
+                                    <option value="ALERT">ALERT</option>
+                                    <option value="DONE">DONE</option>
+                                </select>
+                            </span>
+                            <input type="submit" value="Save" />
+                        </form>
+                    </div>
+                    <div class="show">
+                        <span class="name">{{name}}</span>
+                        <span class="actor">{{actor.name}}</span>
+                        <span class="status">{{status}}</span>
+                    </div>
+                </li>
+            {{/step.tasks}}
+        </div>
 	</div>
 </div>

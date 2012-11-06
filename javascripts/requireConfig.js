@@ -13,7 +13,8 @@ var require = {
 			jQuery: 'libs/jQuery/jquery-1.7.2',
 			Underscore: 'libs/underscore',
 			Store: 'libs/store',
-			Template: 'libs/mustache',
+			TemplateEngine: 'libs/mustache',
+            Template: 'libs/mustache-custom',
 			Json: "libs/json2",
 	        Router: "libs/router",
 			Model: 'libs/model'
