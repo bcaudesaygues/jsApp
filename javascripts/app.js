@@ -14,22 +14,22 @@ define(['jQuery', 'Store', "Router", "models/Company","models/Process", "models/
     			
     			$.ajaxSetup({async: false, cache: true});
     			$.getScript("/companies.js", function() { 
-    				Store.insert(Company, companies);
+    				Store.insert(Company.prototype, companies);
     			});
     			$.getScript("/processes.js", function() { 
-    				Store.insert(Process, processes);
+    				Store.insert(Process.prototype, processes);
     			});
     			$.getScript("/users.js", function() { 
-    				Store.insert(User, users);
+    				Store.insert(User.prototype, users);
     			});
     			$.getScript("/tasks.js", function() { 
-    				Store.insert(Task, tasks);
+    				Store.insert(Task.prototype, tasks);
     			});
     			$.getScript("/steps.js", function() { 
-    				Store.insert(Step, steps);
+    				Store.insert(Step.prototype, steps);
     			});
     			$.getScript("/data.js", function() { 
-    				Store.insert(Flow, flows);
+    				Store.insert(Flow.prototype, flows);
     			});
     		},
     		router: Router,

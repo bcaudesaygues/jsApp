@@ -1,20 +1,20 @@
-define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow", "Router"], function($, Store, Model, Flow, FlowView, Router) {
+define(["jQuery", 'Underscore', "Store", "lib/model", "models/Flow", "views/Flow", "Router"], function($, _, Store, Model, Flow, FlowView, Router) {
 	
 	var FlowController = {
 		list: function() {
 			FlowController.bind();
 			var flowListView = FlowView.list;
-			flowListView.render(Model.prototype.findAll(Flow));
+			flowListView.render(Flow.prototype.findAll());
 		},
 		show: function(id) {
-			var flow = Model.prototype.findById(Flow, id);
+			var flow = Flow.findById(id);
 			FlowView.show.render(flow);
 		},
 		save: function(flowForm, callback) {
 			// Property merge
 			var flow;
 			if (flowForm.id) {
-				flow = Model.prototype.findById(Flow, flowForm.id);
+				flow = Flow.prototype.findById(flowForm.id);
 				_.each(flowForm, function(value, property) {
 					if (flow["set_" + property]) {
 						flow["set_" + property](value);
@@ -28,11 +28,11 @@ define(["jQuery", "Store", "lib/model", "models/Flow", "views/Flow", "Router"], 
 			}
 			
 			flow.save();
-            
+
 			if (callback)
 				callback();
-                
-            Router.route("FlowController", "list");
+
+			Router.route("FlowController", "list");
 		},
 		addFlowForm: function() {
 			var flow = Store.factory(Flow, {});

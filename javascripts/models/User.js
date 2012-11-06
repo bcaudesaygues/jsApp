@@ -7,6 +7,6 @@ define(["lib/model"] , function(Model) {
 		];
 	}
 	User.prototype = new Model();
-	User.prototype.constructor = "User";
+	User.prototype.constructor = User;
 	return User;
 });

@@ -12,7 +12,7 @@ define(["lib/model", "models/User"] , function(Model, User) {
 		
 		Object.defineGetterAndSetter(this, "actor", {
 			get: function() {
-				return Model.prototype.findById(User, this.actor);
+				return User.prototype.findById(this.actor);
 			},
 			set: function(actorId) {
 				this.actor = actorId;
@@ -20,6 +20,6 @@ define(["lib/model", "models/User"] , function(Model, User) {
 		});
 	}
 	Task.prototype = new Model();
-	Task.prototype.constructor = "Task";
+	Task.prototype.constructor = Task;
 	return Task;
 });

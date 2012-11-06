@@ -11,7 +11,7 @@
 
 		// Object factory
 		factory : function(modelType, arg) {
-			var obj = new modelType();
+			var obj = new modelType.constructor();
 			_.each(obj.__meta, function(propName, index) {
 				if (this[propName]) {
 					if (obj["set_" + propName]) {
@@ -23,7 +23,7 @@
 					obj[propName] = "";
 				}
 			}, arg);
-			obj.prototype = new modelType();
+			//obj.prototype = new modelType();
 			return obj;
 		},
 		_createKey : function(modelName, id) {
@@ -31,7 +31,7 @@
 		},
 		
 		insert: function(modelType, collection) {
-			var modelName = modelType.prototype.constructor;
+			var modelName = modelType.getTypeName();
 			if (!this._store[modelName]) {
 				this._store[modelName] = [];
 			}
@@ -47,11 +47,11 @@
 			}
 		},
 		getNextId: function(modelType) {
-			this._ids[modelType.prototype.constructor] == this._ids[modelType.prototype.constructor]++;
-			return this._ids[modelType.prototype.constructor];
+			this._ids[modelType] == this._ids[modelType]++;
+			return this._ids[modelType];
 		},
 		all: function(modelType) {
-			var modelName = modelType.prototype.constructor;
+			var modelName = modelType.getTypeName();
 			var collection = this._store[modelName];
 			var elems = [];
 			if (!collection) {
@@ -65,7 +65,7 @@
 			return elems;
 		},
 		find: function(modelType, id) {
-			var modelName = modelType.prototype.constructor;
+			var modelName = modelType.getTypeName();;
 			var key = this._createKey(modelName, id);
 			var json = localStorage.getItem(key);
 			return this.factory(modelType, JSON.parse(json));
@@ -79,47 +79,46 @@
 			return elems;
 		},
 		save: function(obj) {
-			var type = obj.constructor;
+			var type = obj.getTypeName();
 			var key = this._createKey(type, obj.id);
 			
-			if ("onstorage" in document) {
-				localStorage.setKey('_key', key);
+			this.setKey(key, obj);
+			if(this._store[type] === undefined) {
+				this._store[type] = [];
 			}
-			this._event = "save";
-			this._type = type;
-			this._last_sent_key = key;
-			localStorage.setKey(key, obj);
-			if(this._store[obj.constructor] === undefined) {
-				this._store[obj.constructor] = [];
-			}
-            if (!_.contains(this._store[obj.constructor], key))
-			    this._store[obj.constructor].push(key);
-                
-            this.sendEvent(key, "save");
+            if (!_.contains(this._store[type], key)) {
+				this._store[type].push(key);
+            }
 		},
 		bind: function() {
 			if (document.addEventListener) {
-                $(document).on("onstorage", this.storeEvent);
-    			$(document).on("onstoragecommit", this.storeEvent);
+				$(document).on("onstorage", this.storeEvent);
+				$(document).on("onstoragecommit", this.storeEvent);
 			} else {
 				$(document).on("onstorage", this.storeEvent);
 				$(document).on("onstoragecommit", this.storeEvent);
-				//document.attachEvent("onstoragecommit", this.event);
 			}
 		},
-        sendEvent: function(key, eventType) {
-            var eventType = [Store._type, eventType].join(".");
-            $(document).triggerHandler(eventType, key);
-        },
 		storeEvent: function(e) {
 			var key = localStorage.getItem("_key");
 			if(key !== null && key !== "_key"){
 				var event = [Store._type,Store._event].join('.');
-                console.log(event);
+				console.log(event);
 				$(document).triggerHandler(event, key);
 			}
+		},
+		setKey: function(key, value) {
+			var json = '';
+			if(_.isString(value)) {
+				json = value;
+			} else {
+				json = JSON.stringify(value);
+			}
+			localStorage.setItem(key,json);
+			var event = [value.getTypeName(),'save'].join('.');
+			$(document).triggerHandler(event, key);
 		}
-	}
+	};
 	
 	window.Store = Store;
 	return Store;

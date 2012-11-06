@@ -22,7 +22,7 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 		// manager getter/setter
 		Object.defineGetterAndSetter(this, "manager", {
 			get: function() {
-				return Model.prototype.findById(User, this.manager);
+				return User.prototype.findById(this.manager);
 			},
 			set: function(managerId) {
 				this.manager = managerId;
@@ -31,7 +31,7 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 	
 		Object.defineGetterAndSetter(this, "tasks", {
 			get: function() {
-				return Model.prototype.findByIds(Task, this.tasks);
+				return Task.prototype.findByIds(this.tasks);
 			},
 			set: function(tasksId) {
 				this.tasks = tasksId;
@@ -40,6 +40,6 @@ define(["lib/model", "models/Task", "models/User"] , function(Model, Task, User)
 	}
 	
 	Step.prototype = new Model();
-	Step.prototype.constructor = "Step";
+	Step.prototype.constructor = Step;
 	return Step;
 });

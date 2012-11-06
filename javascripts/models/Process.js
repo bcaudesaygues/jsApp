@@ -6,6 +6,6 @@ define(["lib/model"] , function(Model) {
 		]
 	};
 	Process.prototype = new Model;
-	Process.prototype.constructor = "Process";
+	Process.prototype.constructor = Process;
 	return Process;
 });

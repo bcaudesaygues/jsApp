@@ -16,8 +16,7 @@ var require = {
 			Template: 'libs/mustache',
 			Json: "libs/json2",
 	        Router: "libs/router",
-			Model: 'libs/model',
-			LocalStorage: "lib/localStorage"
+			Model: 'libs/model'
 		}
 	},
 	shim: {
@@ -28,7 +27,7 @@ var require = {
 			exports: 'JSON'
 		},
 		'libs/store': {
-			deps: ['jQuery','Underscore', 'Json', 'LocalStorage'],
+			deps: ['jQuery','Underscore', 'Json'],
 			exports: 'Store'
 		},
 		'libs/model': {

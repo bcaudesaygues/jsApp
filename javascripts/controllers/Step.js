@@ -1,14 +1,14 @@
 define(["Router", "lib/model", "models/Step", "views/Step"], function(Router, Model, Step, StepView) {
     var StepController = {
         show: function(id) {
-    		var step = Model.prototype.findById(Step, id);
+    		var step = Step.prototype.findById(id);
     		StepView.show.render(step);
     	},
         save: function(stepForm, callback) {
             // Property merge
             var step;
             if (stepForm.id) {
-                step = Model.prototype.findById(Step, stepForm.id);
+                step = Step.prototype.findById(stepForm.id);
                 _.each(stepForm, function(value, property) {
                     if (step["set_" + property]) {
                         step["set_" + property](value);

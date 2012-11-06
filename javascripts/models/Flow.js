@@ -1,4 +1,4 @@
-define(["lib/model", "models/Process", "models/Company", "models/User", "models/Step"] , function(Model, Process, Company, User, Step) {
+define(['Underscore', "lib/model", "models/Process", "models/Company", "models/User", "models/Step"] , function(_, Model, Process, Company, User, Step) {
 	function Flow() {
 		this.__meta = [
 			"id",
@@ -14,17 +14,17 @@ define(["lib/model", "models/Process", "models/Company", "models/User", "models/
 		// Process getter/setter
 		Object.defineGetterAndSetter(this, "process", {
 			get: function() {
-				return Model.prototype.findById(Process, this.process);
+				return Process.prototype.findById(this.process);
 			},
 			set: function(processId) {
 				this.process = processId;
 			}
 		});
-	   
+
 		// Company getter/setter
 		Object.defineGetterAndSetter(this, "company", {
 			get: function() {
-				return Model.prototype.findById(Company, this.company);
+				return Company.prototype.findById(this.company);
 			},
 			set: function(companyId) {
 				this.company = companyId;
@@ -34,7 +34,7 @@ define(["lib/model", "models/Process", "models/Company", "models/User", "models/
 		// Owner getter/setter
 		Object.defineGetterAndSetter(this, "owner", {
 			get: function() {
-				return Model.prototype.findById(User, this.owner);
+				return User.prototype.findById(this.owner);
 			},
 			set: function(ownerId) {
 				this.owner = ownerId;
@@ -44,7 +44,7 @@ define(["lib/model", "models/Process", "models/Company", "models/User", "models/
 		// Company getter/setter
 		Object.defineGetterAndSetter(this, "steps", {
 			get: function() {
-				var steps = Model.prototype.findByIds(Step, this.steps);
+				var steps = Step.prototype.findByIds(this.steps);
 				_.each(steps, function(step, index) {
 					step.flow = this;
 				});
@@ -55,9 +55,10 @@ define(["lib/model", "models/Process", "models/Company", "models/User", "models/
 			}
 		});
 		
-	};
+	}
+	
 	Flow.prototype = new Model();
-	Flow.prototype.constructor = "Flow";
+	Flow.prototype.constructor = Flow;
 	
 	return Flow;
 });
